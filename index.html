@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        
+        .wrap{
+            margin: 5%;
+            
+        }
+
+        .cajas{
+            box-shadow: 5px 10px 8px 10px #888888;
+        }
+        #content{
+            border: 1px solid black;
+            /* margin-left: 5%;
+            margin-right: 5%;
+            margin-top: 5%; */
+            
+            
+        }
+        #selectContent{
+            border: 1px solid black;
+            /* margin-left: 5%;
+            margin-right: 5%;
+            margin-bottom: 5%; */
+            height:400px;
+            /* display: flex;
+            justify-content: flex-end;
+            flex-direction: row;
+            align-items: flex-end; */
+            
+        }
+        #guardar{
+            border: 1px solid black;
+            padding: 1%;
+            border-radius: 50px;
+            width: fit-content;
+            cursor: pointer;
+            margin-top: 1%;
+            background-color: aqua;
+            box-shadow: 5px 10px 8px 10px #888888;
+        }
+
+        #guardar:hover{
+            background-color: rgb(229, 255, 0);
+        }
+
+        #title{
+           
+            display: flex;
+            justify-content: center;
+        }
+
+        
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script>
+        var idIm;
+        
+        $(document).ready(function (){
+            $('.im').attr('draggable',true);
+            $('.im').on("dragstart",function(event){
+                idIm = this.id;
+                console.log("drag start"+idIm)
+                event.originalEvent.dataTransfer.setData("text", event.target.id);
+            });
+            $("#selectContent").on("dragover", function (event) {
+                    
+                event.preventDefault();
+                    
+            })
+            $("#selectContent").on("dragenter", function (event) {
+                event.preventDefault();
+            })
+
+            $(".im").on("dragleave", function (event) {
+                event.preventDefault();
+            })
+            $('#selectContent').on("drop",function(event){
+                event.preventDefault();
+                console.log("drop"+idIm)
+                sOriginal = event.originalEvent.dataTransfer.getData('text');
+                $("#"+idIm).appendTo(this);
+                document.getElementById("selectContent").style.height = '100%';
+            })
+        })
+
+        
+    </script> 
+</head>
+<body>
+    <div id="title"><img src="Imagenes/ibex.png"></div>
+    <hr>
+    <div class="wrap">
+        <div class="cajas">
+            <div id="content">
+                <img id="im1" class="im" src="Imagenes/BBVA.png">
+                <img id="im2" class="im" src="Imagenes/caixabank.png">
+                <img id="im3" class="im" src="Imagenes/cellnex.png">
+                <img id="im4" class="im" src="Imagenes/ferrovial.png">
+                <img id="im5" class="im" src="Imagenes/iberdrola.png">
+                <img id="im6" class="im" src="Imagenes/inditex.png">
+                <img id="im7" class="im" src="Imagenes/naturgy.png">
+                <img id="im8" class="im" src="Imagenes/repsol.png">
+                <img id="im9" class="im" src="Imagenes/santander.png">
+                <img id="im10" class="im" src="Imagenes/telefonica.png">
+            </div>
+            <div id="selectContent">
+                
+            </div>
+        </div>
+        <div id="guardar">Guardar</div>
+    </div>
+</body>
+</html>
