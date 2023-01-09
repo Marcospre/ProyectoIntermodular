@@ -8,8 +8,12 @@
     <style>
         
         .wrap{
-            margin: 5%;
-            
+            margin: 5%; 
+            /* display: none; */
+        }
+
+        .wrap2{
+            margin: 5%; 
         }
 
         .cajas{
@@ -17,6 +21,8 @@
         }
         #content{
             border: 1px solid black;
+            width: 100%;
+            height:500px;
             /* margin-left: 5%;
             margin-right: 5%;
             margin-top: 5%; */
@@ -24,11 +30,12 @@
             
         }
         #selectContent{
-            border: 1px solid black;
+            height:500px;
+            width: 100%;
             /* margin-left: 5%;
             margin-right: 5%;
             margin-bottom: 5%; */
-            height:400px;
+            
             /* display: flex;
             justify-content: flex-end;
             flex-direction: row;
@@ -55,6 +62,20 @@
             display: flex;
             justify-content: center;
         }
+        .im{
+            width: 200px;
+        }
+        .content2{
+            border: 1px solid black;
+            width: 100%;
+            
+        }
+
+        .basura{
+            display: flex;
+            flex-direction: row;
+            justify-content: end;
+        }
 
         
     </style>
@@ -69,12 +90,12 @@
                 console.log("drag start"+idIm)
                 event.originalEvent.dataTransfer.setData("text", event.target.id);
             });
-            $("#selectContent").on("dragover", function (event) {
+            $("#selectContent, .basura").on("dragover", function (event) {
                     
                 event.preventDefault();
                     
             })
-            $("#selectContent").on("dragenter", function (event) {
+            $("#selectContent, .basura").on("dragenter", function (event) {
                 event.preventDefault();
             })
 
@@ -83,10 +104,13 @@
             })
             $('#selectContent').on("drop",function(event){
                 event.preventDefault();
-                console.log("drop"+idIm)
                 sOriginal = event.originalEvent.dataTransfer.getData('text');
                 $("#"+idIm).appendTo(this);
-                document.getElementById("selectContent").style.height = '100%';
+            })
+            $('.basura').on("drop",function(event){
+                event.preventDefault();
+                sOriginal = event.originalEvent.dataTransfer.getData('text');
+                $("#"+idIm).appendTo("#content");
             })
         })
 
@@ -110,11 +134,26 @@
                 <img id="im9" class="im" src="Imagenes/santander.png">
                 <img id="im10" class="im" src="Imagenes/telefonica.png">
             </div>
-            <div id="selectContent">
-                
+            <div class="content2">
+                <div id="selectContent">
+                    
+                </div>
+                <div class="basura">
+                    <img class="im" src="Imagenes/basura.png">
+                </div>
             </div>
         </div>
         <div id="guardar">Guardar</div>
     </div>
+    <div class="wrap2">
+
+    </div>
+    <script>
+        let consultar = document.getElementById('guardar');
+        consultar.addEventListener("click",function(){
+            let seleccionados = document.querySelectorAll('#selectContent');
+            console.log(seleccionados);
+        })
+    </script>
 </body>
 </html>
