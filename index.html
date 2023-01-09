@@ -5,80 +5,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <style>
-        
-        .wrap{
-            margin: 5%; 
-            /* display: none; */
-        }
+    <link href="styles.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 
-        .wrap2{
-            margin: 5%; 
-        }
-
-        .cajas{
-            box-shadow: 5px 10px 8px 10px #888888;
-        }
-        #content{
-            border: 1px solid black;
-            width: 100%;
-            height:500px;
-            /* margin-left: 5%;
-            margin-right: 5%;
-            margin-top: 5%; */
-            
-            
-        }
-        #selectContent{
-            height:500px;
-            width: 100%;
-            /* margin-left: 5%;
-            margin-right: 5%;
-            margin-bottom: 5%; */
-            
-            /* display: flex;
-            justify-content: flex-end;
-            flex-direction: row;
-            align-items: flex-end; */
-            
-        }
-        #guardar{
-            border: 1px solid black;
-            padding: 1%;
-            border-radius: 50px;
-            width: fit-content;
-            cursor: pointer;
-            margin-top: 1%;
-            background-color: aqua;
-            box-shadow: 5px 10px 8px 10px #888888;
-        }
-
-        #guardar:hover{
-            background-color: rgb(229, 255, 0);
-        }
-
-        #title{
-           
-            display: flex;
-            justify-content: center;
-        }
-        .im{
-            width: 200px;
-        }
-        .content2{
-            border: 1px solid black;
-            width: 100%;
-            
-        }
-
-        .basura{
-            display: flex;
-            flex-direction: row;
-            justify-content: end;
-        }
-
-        
-    </style>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
     <script>
         var idIm;
@@ -87,7 +16,6 @@
             $('.im').attr('draggable',true);
             $('.im').on("dragstart",function(event){
                 idIm = this.id;
-                console.log("drag start"+idIm)
                 event.originalEvent.dataTransfer.setData("text", event.target.id);
             });
             $("#selectContent, .basura").on("dragover", function (event) {
@@ -120,19 +48,19 @@
 <body>
     <div id="title"><img src="Imagenes/ibex.png"></div>
     <hr>
-    <div class="wrap">
+    <div id="wrap">
         <div class="cajas">
             <div id="content">
-                <img id="im1" class="im" src="Imagenes/BBVA.png">
-                <img id="im2" class="im" src="Imagenes/caixabank.png">
-                <img id="im3" class="im" src="Imagenes/cellnex.png">
-                <img id="im4" class="im" src="Imagenes/ferrovial.png">
-                <img id="im5" class="im" src="Imagenes/iberdrola.png">
-                <img id="im6" class="im" src="Imagenes/inditex.png">
-                <img id="im7" class="im" src="Imagenes/naturgy.png">
-                <img id="im8" class="im" src="Imagenes/repsol.png">
-                <img id="im9" class="im" src="Imagenes/santander.png">
-                <img id="im10" class="im" src="Imagenes/telefonica.png">
+                <img id="im1" class="im" alt="BBVA" src="Imagenes/BBVA.png">
+                <img id="im2" class="im" alt="CaixaBank" src="Imagenes/caixabank.png">
+                <img id="im3" class="im" alt="CellNex" src="Imagenes/cellnex.png">
+                <img id="im4" class="im" alt="Ferrovial" src="Imagenes/ferrovial.png">
+                <img id="im5" class="im" alt="Iberdrola" src="Imagenes/iberdrola.png">
+                <img id="im6" class="im" alt="Inditex" src="Imagenes/inditex.png">
+                <img id="im7" class="im" alt="Naturgy" src="Imagenes/naturgy.png">
+                <img id="im8" class="im" alt="Repsol" src="Imagenes/repsol.png">
+                <img id="im9" class="im" alt="Santander" src="Imagenes/santander.png">
+                <img id="im10" class="im" alt="Telefonica" src="Imagenes/telefonica.png">
             </div>
             <div class="content2">
                 <div id="selectContent">
@@ -145,15 +73,11 @@
         </div>
         <div id="guardar">Guardar</div>
     </div>
-    <div class="wrap2">
+    <div class="wrap2" id="resul">
 
     </div>
-    <script>
-        let consultar = document.getElementById('guardar');
-        consultar.addEventListener("click",function(){
-            let seleccionados = document.querySelectorAll('#selectContent');
-            console.log(seleccionados);
-        })
-    </script>
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+
 </body>
 </html>

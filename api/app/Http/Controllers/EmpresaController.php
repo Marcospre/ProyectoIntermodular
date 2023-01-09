@@ -11,7 +11,7 @@ class EmpresaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $empresas = Empresa::all();
         return $empresas;
@@ -50,7 +50,8 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        //
+        $empresa = Empresa::findOrFail($id);
+        return $empresa;
     }
 
     /**
