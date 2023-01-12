@@ -81,3 +81,8 @@
 #imcard{
     height: 100%;
 }
+
+#resul{
+    display: flex;
+    flex-direction: row;
+}
