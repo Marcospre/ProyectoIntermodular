@@ -1,70 +1,113 @@
-window.onload() = function() {
-    if(localStorage.principal != undefined){
-        if(localStorage.getItem("principal")){
-            document.getElementById("wrap").style.display = 'block';
-            if(localStorage.getItem("seleccionadas")){
-                aEmpresas = JSON.parse(sessionStorage.seleccionadas);
-                aEmpresas.forEach(empre=>{
-                    $(document).ready(function(){
-                        $("#"+empre).appendTo("#content");
-                    })
-                })
+window.onload = () => {
+            
+            if(localStorage.seleccionadas != undefined){
+                document.getElementById("wrap").style.display = 'none';
+                document.getElementById("wrap2").style.display = 'block';
+                aEmpresas = JSON.parse(localStorage.seleccionadas);
+                consultarApi(aEmpresas,true);
+            }else{
+                document.getElementById('wrap').style.display = 'block';
+                document.getElementById("wrap2").style.display = 'none';
             }
         }
+    
+
+
+// const data = null;
+
+// const xhr = new XMLHttpRequest();
+// xhr.withCredentials = false;
+
+
+
+function consultarApi(selec,local){
+    let fetchs = new Array();
+    let guardar = new Array();
+    let src;
+    let alt;
+    let id;
+
+    if(selec.length != 0){
+
+        for(let i = 0; i < selec.length; i++){
+            // /api/xxxx?empresas=x,y,z
+            if(!local){
+                fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${selec[i].id.replace("im","")}`));
+
+                
+                id = selec[i].getAttribute("id")
+                alt = document.getElementById(`${id}`).getAttribute("alt")
+
+                guardar.push(id+"/"+alt)
+                
+                
+            }else{
+                let sel = JSON.parse(localStorage.getItem('seleccionadas'))
+                let arr = sel[i].split("/");
+                id = arr[0];
+                alt = arr[1];
+                guardar.push(id+"/"+alt)
+                fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${id.replace("im","")}`));
+            }
+            
+            // pedirDato(seleccionados[i].getAttribute("id").replace("im",""));
+            // let mesag = seleccionados[i].getAttribute("src").replace("Imagenes/","").replace(".png","");
+            document.getElementById("resul").innerHTML += `<div class="card" id="empre${i+1}" style="width: 18rem;">
+                                                                <img src="Imagenes/${id}.png" id="imcard" class="card-img-top" alt="...">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">${alt}</h5>
+                                                                    <p class="card-text" id="valor${id}"></p>
+                                                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                                                </div>
+                                                                </div>`;
+            
+            // setTimeout("Func1()", 4000);
+        }
     }
+
+    if(localStorage.seleccionadas != undefined){
+        localStorage.removeItem('seleccionadas')
+        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+
+    }else{
+        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+
+    }
+
+    Promise.all(fetchs)
+    .then(files =>{
+        files.forEach(file=>{
+            process(file.json())
+        })
+    }).catch(err=>{
+
+    });
+
+    const process = (prom) =>{
+        prom.then(data=>{
+            document.getElementById(`valorim${data.id}`).innerHTML = data.datos;
+    
+        })
+    }
+   
 }
 
-const data = null;
 
-const xhr = new XMLHttpRequest();
-xhr.withCredentials = false;
 
-if(sessionStorage.Empresa == undefined){
-    aEmpresa = {};
-
-}
 let consultar = document.getElementById('guardar');
         consultar.addEventListener("click",function(){
             document.getElementById("wrap").style.display = "none";
             
             let seleccionados = document.querySelectorAll('#selectContent>img');
-            let fetchs = new Array();
-            console.log(seleccionados.length)
-            if(seleccionados.length != 0){
-
-                for(let i = 0; i < seleccionados.length; i++){
-                    fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${seleccionados[i].getAttribute("id").replace("im","")}`));
-                    // pedirDato(seleccionados[i].getAttribute("id").replace("im",""));
-                    // let mesag = seleccionados[i].getAttribute("src").replace("Imagenes/","").replace(".png","");
-                    document.getElementById("resul").innerHTML += `<div class="card" id="empre${i+1}" style="width: 18rem;">
-                                                                        <img src="${seleccionados[i].src}" id="imcard" class="card-img-top" alt="...">
-                                                                        <div class="card-body">
-                                                                            <h5 class="card-title">${seleccionados[i].getAttribute("alt")}</h5>
-                                                                            <p class="card-text" id="valor${seleccionados[i].getAttribute("id").replace("im","")}"></p>
-                                                                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                                                                        </div>
-                                                                        </div>`;
-                    
-                    // setTimeout("Func1()", 4000);
-                }
-            }
-
-            Promise.all(fetchs)
-            .then(files =>{
-                files.forEach(file=>{
-                    process(file.json())
-                })
-            }).catch(err=>{
-
-            });
-
-            let process = (prom) =>{
-                prom.then(data=>{
-                    document.getElementById(`valor${data.id}`).innerHTML = data.datos;
-
-                })
-            }
+            console.log(seleccionados)
+            consultarApi(seleccionados,false);
         })
+
+function atras(){
+    document.getElementById('wrap').style.display = 'block';
+    document.getElementById('wrap2').style.display = 'none';
+    localStorage.removeItem("seleccionadas")
+}
 
 // xhr.addEventListener("readystatechange", function () {
 //     if (this.readyState === this.DONE) {

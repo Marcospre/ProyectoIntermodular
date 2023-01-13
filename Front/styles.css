@@ -3,9 +3,9 @@
     /* display: none; */
 }
 
-.wrap2{
+#wrap2{
     margin: 5%; 
-    display: none;
+    
 }
 
 .cajas{
@@ -73,10 +73,6 @@
     border: 1px solid black;
 }
 
-.wrap2{
-    display: flex;
-    flex-direction: row;
-}
 
 #imcard{
     height: 100%;
