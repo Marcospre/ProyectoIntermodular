@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,3 +24,11 @@ Route::get('/empresas/{id}', 'App\Http\Controllers\EmpresaController@show'); //m
 Route::post('/empresas', 'App\Http\Controllers\EmpresaController@store');//crear una empresa
 Route::put('/empresas/{id}', 'App\Http\Controllers\EmpresaController@update');//actualizar los datos de una empresa
 Route::delete('/empresas/{id}', 'App\Http\Controllers\EmpresaController@destroy');//actualizar los datos de una empresa
+
+Route::controller(AuthController::class)->group(function () {
+    Route::post('login', 'login');
+    Route::post('register', 'register');
+    Route::post('logout', 'logout');
+    Route::post('refresh', 'refresh');
+
+});

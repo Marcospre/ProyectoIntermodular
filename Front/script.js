@@ -68,10 +68,11 @@ function consultarApi(selec,local){
     if(localStorage.seleccionadas != undefined){
         localStorage.removeItem('seleccionadas')
         localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+        document.getElementById("wrap2").style.display = 'block';
 
     }else{
         localStorage.setItem('seleccionadas',JSON.stringify(guardar));
-
+        document.getElementById("wrap2").style.display = 'block';
     }
 
     Promise.all(fetchs)
@@ -107,6 +108,7 @@ function atras(){
     document.getElementById('wrap').style.display = 'block';
     document.getElementById('wrap2').style.display = 'none';
     localStorage.removeItem("seleccionadas")
+    document.getElementById("resul").innerHTML = ""
 }
 
 // xhr.addEventListener("readystatechange", function () {
