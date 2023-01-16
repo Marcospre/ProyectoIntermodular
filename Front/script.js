@@ -1,5 +1,5 @@
 window.onload = () => {
-            
+           
             if(localStorage.seleccionadas != undefined){
                 document.getElementById("wrap").style.display = 'none';
                 document.getElementById("wrap2").style.display = 'block';
@@ -9,6 +9,7 @@ window.onload = () => {
                 document.getElementById('wrap').style.display = 'block';
                 document.getElementById("wrap2").style.display = 'none';
             }
+            
         }
     
 
