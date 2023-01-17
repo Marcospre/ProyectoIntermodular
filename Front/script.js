@@ -112,6 +112,60 @@ function atras(){
     document.getElementById("resul").innerHTML = ""
 }
 
+
+function cambiarModal(cambio){
+    if(cambio){
+        document.getElementById("register").style.display = "flex";
+        document.getElementById("login").style.display = "none";
+    }else{
+        document.getElementById("login").style.display = "flex";
+        document.getElementById("register").style.display = "none";
+    }
+}
+
+function logearUsuario(){
+    const email = document.querySelector("#emailL");
+    const password = document.querySelector("#passL");
+
+    fetch('http://127.0.0.1:8000/api/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        peti: {
+                            email: email.value,
+                            password: password.value
+                        }
+                    })
+                }).then((response) => response.json())
+                .then((response) => console.log(response))
+                .catch((err) => console.error(err));
+
+}
+
+function registrarUsuario(){
+    const name = document.querySelector("#nameR");
+    const email = document.querySelector("#emailR");
+    const password = document.querySelector("#passR");
+
+    fetch('http://127.0.0.1:8000/api/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        peti: {
+                            name: name.value,
+                            email: email.value,
+                            password: password.value
+                        }
+                    })
+                }).then((response) => response.json())
+                .then((response) => console.log(response))
+                .catch((err) => console.error(err));
+
+}
 // xhr.addEventListener("readystatechange", function () {
 //     if (this.readyState === this.DONE) {
 //         let res = JSON.parse(this.responseText);
