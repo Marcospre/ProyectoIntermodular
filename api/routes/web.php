@@ -21,7 +21,7 @@ Route::get('/', function () {
 
 // Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 // Route::get('/proyecto', [App\Http\Controllers\AuthController::class, 'index'])->name('proyecto');
 // Route::get('login', [VistasController::class,'showLoginForm']);
 // Route::post('login', 'App\Http\Controllers\AuthController@login')->name('user.autentificar');

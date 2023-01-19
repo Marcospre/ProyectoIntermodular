@@ -113,6 +113,7 @@ function atras(){
 }
 
 
+
 function cambiarModal(cambio){
     if(cambio){
         document.getElementById("register").style.display = "flex";
@@ -123,47 +124,84 @@ function cambiarModal(cambio){
     }
 }
 
-function logearUsuario(){
+function setToken(token){
+    if(localStorage.token != undefined){
+        localStorage.setItem('token',token);
+    }else{
+        localStorage.removeItem("token");
+        localStorage.setItem('token',token);
+    }
+}
+
+async function logearUsuario(){
     const email = document.querySelector("#emailL");
     const password = document.querySelector("#passL");
 
-    fetch('http://127.0.0.1:8000/api/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        peti: {
-                            email: email.value,
-                            password: password.value
-                        }
-                    })
-                }).then((response) => response.json())
-                .then((response) => console.log(response))
-                .catch((err) => console.error(err));
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/login", {
+          method: 'POST',
+          headers: {},
+          body: new URLSearchParams({
+            email: email.value,
+            password: password.value
+          })
+        });
+      
+        if (response.ok) {
+          const result = await response.json();
+          setToken(result.authorisation.token);
+          document.getElementById("myModal").style.display = "none";
+         
+          console.log(result.authorisation.token);
+        }
+      } catch (err) {
+        console.error(err);
+      }
 
 }
 
-function registrarUsuario(){
+async function registrarUsuario(){
     const name = document.querySelector("#nameR");
     const email = document.querySelector("#emailR");
     const password = document.querySelector("#passR");
 
-    fetch('http://127.0.0.1:8000/api/register', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        peti: {
-                            name: name.value,
-                            email: email.value,
-                            password: password.value
-                        }
-                    })
-                }).then((response) => response.json())
-                .then((response) => console.log(response))
-                .catch((err) => console.error(err));
+    try {
+        const response = await fetch("http://127.0.0.1:8000/api/register?name=", {
+          method: 'POST',
+          headers: {},
+          body: new URLSearchParams({
+            name: name.value,
+            email: email.value,
+            password: password.value
+          })
+        });
+      
+        if (response.ok) {
+          const result = await response.json();
+          setToken(result.authorisation.token);
+          document.getElementById("myModal").style.display = "none";
+          console.log(result);
+          
+        }
+      } catch (err) {
+        console.error(err);
+      }
+
+    // fetch('http://127.0.0.1:8000/api/register', {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 },
+    //                 body: JSON.stringify({
+    //                     peti: {
+    //                         name: name.value,
+    //                         email: email.value,
+    //                         password: password.value
+    //                     }
+    //                 })
+    //             }).then((response) => response.json())
+    //             .then((response) => console.log(response))
+    //             .catch((err) => console.error(err));
 
 }
 // xhr.addEventListener("readystatechange", function () {
