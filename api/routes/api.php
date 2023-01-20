@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EmpresaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -19,7 +20,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/empresas', 'App\Http\Controllers\EmpresaController@index'); //mostrar todas la cotizaciones
+Route::get('/empresas', [EmpresaController::class,'index']); //mostrar todas la cotizaciones
 Route::get('/empresas/{id}', 'App\Http\Controllers\EmpresaController@show'); //muestra una cotizacion
 Route::post('/empresas', 'App\Http\Controllers\EmpresaController@store');//crear una empresa
 Route::put('/empresas/{id}', 'App\Http\Controllers\EmpresaController@update');//actualizar los datos de una empresa

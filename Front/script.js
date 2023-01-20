@@ -19,8 +19,61 @@ window.onload = () => {
 // const xhr = new XMLHttpRequest();
 // xhr.withCredentials = false;
 
+function consultarEmpresas(empresas){
 
+    let i = 1;
+    let alt;
+    let id;
+    let obj;
 
+    const options = {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer '+sessionStorage.token
+        }
+      };
+      
+      fetch('http://127.0.0.1:8000/api/empresas', options)
+        .then(response => response.json())
+        .then(response => prueba(response,empresas))
+        .catch(err => console.error(err));
+    //   console.log(response)
+   
+}
+
+function prueba(obj,empresas){
+    console.log(empresas)
+    empresas.forEach(selec=>{
+        obj.forEach(res=>{
+            if(selec.getAttribute("id") === res.id){
+                id = selec.getAttribute("id");
+                alt = res.nombre;
+                document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
+                                                                <img src="Imagenes/${res.id}.png" id="imcard" class="card-img-top" alt="...">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">${res.nombre}</h5>
+                                                                    <p class="card-text" id="valor${res.id}">${res.datos}</p>
+                                                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                                                </div>
+                                                                </div>`;
+                i++;
+            }
+            
+        })
+        
+    })
+    document.querySelector("#wrap2").style.display="block";
+
+}
+let consultar = document.getElementById('guardar');
+        consultar.addEventListener("click",function(){
+            document.getElementById("wrap").style.display = "none";
+            
+            let seleccionados = document.querySelectorAll('#selectContent>img');
+            
+            // consultarApi(seleccionados,false);
+            consultarEmpresas(seleccionados)
+        })
 function consultarApi(selec,local){
     let fetchs = new Array();
     let guardar = new Array();
@@ -96,14 +149,7 @@ function consultarApi(selec,local){
 
 
 
-let consultar = document.getElementById('guardar');
-        consultar.addEventListener("click",function(){
-            document.getElementById("wrap").style.display = "none";
-            
-            let seleccionados = document.querySelectorAll('#selectContent>img');
-            console.log(seleccionados)
-            consultarApi(seleccionados,false);
-        })
+
 
 function atras(){
     document.getElementById('wrap').style.display = 'block';
@@ -125,11 +171,11 @@ function cambiarModal(cambio){
 }
 
 function setToken(token){
-    if(localStorage.token != undefined){
-        localStorage.setItem('token',token);
+    if(sessionStorage.token != undefined){
+        sessionStorage.setItem('token',token);
     }else{
-        localStorage.removeItem("token");
-        localStorage.setItem('token',token);
+        sessionStorage.removeItem("token");
+        sessionStorage.setItem('token',token);
     }
 }
 
