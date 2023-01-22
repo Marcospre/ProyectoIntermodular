@@ -1,5 +1,9 @@
 window.onload = () => {
-           
+            if(sessionStorage.token != undefined){
+                document.getElementById("myModal").style.display = 'none';
+            }else{
+                document.getElementById("myModal").style.display = 'block';
+            }
             if(localStorage.seleccionadas != undefined){
                 document.getElementById("wrap").style.display = 'none';
                 document.getElementById("wrap2").style.display = 'block';
@@ -19,37 +23,53 @@ window.onload = () => {
 // const xhr = new XMLHttpRequest();
 // xhr.withCredentials = false;
 
-function consultarEmpresas(empresas){
-
-    let i = 1;
-    let alt;
-    let id;
-    let obj;
+function consultarEmpresas(empresas,local){
 
     const options = {
         method: 'GET',
         headers: {
           Authorization: 'Bearer '+sessionStorage.token
         }
-      };
-      
-      fetch('http://127.0.0.1:8000/api/empresas', options)
-        .then(response => response.json())
-        .then(response => prueba(response,empresas))
-        .catch(err => console.error(err));
+      }; 
+    
+      if(!local){
+        fetch('http://127.0.0.1:8000/api/empresas', options)
+            .then(response => response.json())
+            .then(response => prueba(response,empresas))
+            .catch(err => console.error(err));
+      }else{
+        
+        fetch('http://127.0.0.1:8000/api/empresas', options)
+            .then(response => response.json())
+            .then(response => pruebaLocal(response))
+            .catch(err => console.error(err));
+      }
     //   console.log(response)
    
 }
-
-function prueba(obj,empresas){
-    console.log(empresas)
+function pruebaLocal(obj){
+    let guardar = new Array();
+    let i = 1;
+    let sel = JSON.parse(localStorage.getItem('seleccionadas'))
+    let arr = sel[i].split("/"); 
     empresas.forEach(selec=>{
         obj.forEach(res=>{
-            if(selec.getAttribute("id") === res.id){
+            if(selec == res.id){
+            }
+        })
+    })
+}
+function prueba(obj,empresas){
+    let guardar = new Array();
+    let i = 1;
+    empresas.forEach(selec=>{
+        obj.forEach(res=>{
+            if(selec.getAttribute("id").replace("im","") == res.id){
                 id = selec.getAttribute("id");
                 alt = res.nombre;
+                guardar.push(id+"/"+alt);
                 document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
-                                                                <img src="Imagenes/${res.id}.png" id="imcard" class="card-img-top" alt="...">
+                                                                <img src="Imagenes/${"im"+res.id}.png" id="imcard" class="card-img-top" alt="...">
                                                                 <div class="card-body">
                                                                     <h5 class="card-title">${res.nombre}</h5>
                                                                     <p class="card-text" id="valor${res.id}">${res.datos}</p>
@@ -62,7 +82,15 @@ function prueba(obj,empresas){
         })
         
     })
-    document.querySelector("#wrap2").style.display="block";
+    if(localStorage.seleccionadas != undefined){
+        localStorage.removeItem('seleccionadas')
+        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+        document.getElementById("wrap2").style.display = 'block';
+
+    }else{
+        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+        document.getElementById("wrap2").style.display = 'block';
+    }
 
 }
 let consultar = document.getElementById('guardar');
@@ -72,7 +100,7 @@ let consultar = document.getElementById('guardar');
             let seleccionados = document.querySelectorAll('#selectContent>img');
             
             // consultarApi(seleccionados,false);
-            consultarEmpresas(seleccionados)
+            consultarEmpresas(seleccionados,false)
         })
 function consultarApi(selec,local){
     let fetchs = new Array();
