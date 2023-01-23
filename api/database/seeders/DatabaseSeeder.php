@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             ['nombre' => 'Cellnex', 'datos' => '4'],
             ['nombre' => 'Ferrovial', 'datos' => '4'],
             ['nombre' => 'Iberdrola', 'datos' => '4'],
+            ['nombre' => 'Inditex', 'datos' => '4'],
             ['nombre' => 'Naturgy', 'datos' => '4'],
             ['nombre' => 'Repsol', 'datos' => '4'],
             ['nombre' => 'Santander', 'datos' => '4'],

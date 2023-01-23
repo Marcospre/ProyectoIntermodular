@@ -8,7 +8,7 @@ window.onload = () => {
                 document.getElementById("wrap").style.display = 'none';
                 document.getElementById("wrap2").style.display = 'block';
                 aEmpresas = JSON.parse(localStorage.seleccionadas);
-                consultarApi(aEmpresas,true);
+                consultarEmpresas(aEmpresas,true);
             }else{
                 document.getElementById('wrap').style.display = 'block';
                 document.getElementById("wrap2").style.display = 'none';
@@ -51,13 +51,36 @@ function pruebaLocal(obj){
     let guardar = new Array();
     let i = 1;
     let sel = JSON.parse(localStorage.getItem('seleccionadas'))
-    let arr = sel[i].split("/"); 
-    empresas.forEach(selec=>{
+
+    sel.forEach(selec=>{
+        
         obj.forEach(res=>{
-            if(selec == res.id){
+            console.log(res.id)
+            if(selec.split("/")[0].replace("im","") == res.id){
+                id = selec.split("/")[0];
+                alt = res.nombre;
+                guardar.push(id+"/"+alt);
+                document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
+                                                                <img src="Imagenes/${"im"+res.id}.png" id="imcard" class="card-img-top" alt="...">
+                                                                <div class="card-body">
+                                                                    <h5 class="card-title">${res.nombre}</h5>
+                                                                    <p class="card-text" id="valor${res.id}">${res.datos}</p>
+                                                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                                                </div>
+                                                                </div>`;
+                i++;
             }
         })
     })
+    if(localStorage.seleccionadas != undefined){
+        localStorage.removeItem('seleccionadas')
+        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+        document.getElementById("wrap2").style.display = 'block';
+
+    }else{
+        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+        document.getElementById("wrap2").style.display = 'block';
+    }
 }
 function prueba(obj,empresas){
     let guardar = new Array();
@@ -207,6 +230,10 @@ function setToken(token){
     }
 }
 
+function logout(){
+    document.getElementById("myModal").style.display = "block";
+    sessionStorage.removeItem('token');
+}
 async function logearUsuario(){
     const email = document.querySelector("#emailL");
     const password = document.querySelector("#passL");
