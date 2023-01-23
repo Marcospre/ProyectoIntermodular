@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::create('historial_empresas', function (Blueprint $table) {
-            $table->string('nombre');
+            $table->integer('id_empresa');
             $table->float('valor');
             $table->dateTime('fecha');
             $table->timestamps();

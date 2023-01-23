@@ -37,41 +37,50 @@ const PARAMS_PER_ENTRY = 3;
 const ENTRIES_PER_INSERT = PARAM_LIMIT / PARAMS_PER_ENTRY;
 
 con.connect(function (err) {
+ 
   if (err) throw err;
 
-  const query = "INSERT INTO historial_empresas (nombre, valor, fecha) VALUES ('BBVA', 10, '2022-12-19 00:00:00')";
+  const query = "INSERT INTO historial_empresas (id_empresa, valor, fecha) VALUES ?";
   const now = new Date().setSeconds(0);
-  const stocks = [
-    "BBVA",
-    "CaixaBank",
-    "Cellnex",
-    "Ferrovial",
-    "Iberdrola",
-    "Inditex",
-    "Naturgy",
-    "Repsol",
-    "Santander",
-    "Telefonica",
-  ];
+ 
+  // const stocks = [
+  //   "BBVA",
+  //   "CaixaBank",
+  //   "Cellnex",
+  //   "Ferrovial",
+  //   "Iberdrola",
+  //   "Inditex",
+  //   "Naturgy",
+  //   "Repsol",
+  //   "Santander",
+  //   "Telefonica",
+  // ];
+
+  const stocks = [1,2,3,4,5,6,7,8,9,10];
 
   for (const stock of stocks) {
     const data = generateStockData().map((data, i) => {
-      return ["("+
+      return [
         stock,
         data,
-        substractMinutesFromDate(now, ENTRIES_PER_STOCK - i)+")",
+        substractMinutesFromDate(now, ENTRIES_PER_STOCK - i),
     ];
     });
-
+    
     times(ENTRIES_PER_INSERT, (i) => {
-      const bulk = data.slice(PARAM_LIMIT * i, PARAM_LIMIT * (i + 1));
-      con.query(query, bulk, function (err, result) {
+
+      const bulk =data.slice(PARAM_LIMIT * i, PARAM_LIMIT * (i + 1));
+      
+      con.query(query,`(${bulk})`, function (err, result) {
         if (err) throw err;
         console.log("Number of records inserted: " + result.affectedRows);
       });
+  
     });
-    console.log(data);
+    
+     console.log(data);
   }
+  
 });
 
 const volatility = 0.02;
@@ -89,7 +98,7 @@ const generateData = (old_price) => {
 };
 
 const generateStockData = () => {
-  return unfold(generateData, 10.00, ENTRIES_PER_STOCK);
+  return unfold(generateData, 10, ENTRIES_PER_STOCK);
 };
 
 const unfold = (fn, seed, count) => {
