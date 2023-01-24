@@ -1,127 +1,149 @@
+import mysql from "mysql2/promise";
 
-function generarDatos(cantidad){
-    const volatility = 0.02;
-    const f = (old_price) => {
-    const rnd = Math.random() - 0.4982; // generate number, 0 <= x < 1.0
+const pool = mysql.createPool({
+    host: "127.0.0.1",
+    user: "root",
+    password: "",
+    database: "laravel",
+});
+
+// const createDb = async () => {
+//     try {
+//         const con = await pool.getConnection();
+//         await con.query(
+//             "DROP TABLE IF EXISTS companies, stocks, real_time_stocks"
+//         );
+//         await con.query(
+//             "CREATE TABLE companies (id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255))"
+//         );
+//         await con.query(
+//             "CREATE TABLE stocks (id INT AUTO_INCREMENT PRIMARY KEY, company_id INT, price FLOAT, date DATE, time TIME)"
+//         );
+//         await con.query(
+//             "CREATE TABLE real_time_stocks (id INT AUTO_INCREMENT PRIMARY KEY, company_id INT, price FLOAT, date DATE)"
+//         );
+//         await con.query(
+//             "ALTER TABLE stocks ADD FOREIGN KEY (company_id) REFERENCES companies(id)"
+//         );
+//         await con.query(
+//             "ALTER TABLE real_time_stocks ADD FOREIGN KEY (company_id) REFERENCES companies(id)"
+//         );
+//         con.release();
+//     } catch (err) {
+//         console.log(err);
+//     }
+//     console.log("Database created");
+// };
+
+// const insertCompanies = async () => {
+//     // await createDb();
+
+//     try {
+//         const con = await pool.getConnection();
+//         const companies = [
+//             "bbva",
+//             "santander",
+//             "repsol",
+//             "iberdrola",
+//             "inditex",
+//             "caixabank",
+//             "cellnex",
+//             "naturgy",
+//             "telefonica",
+//             "ferrovial",
+//         ];
+//         let values = companies.map((name) => `('${name}')`).join(",");
+//         await con.query(`INSERT INTO companies (name) VALUES ${values}`);
+//         con.release();
+//         return companies.length;
+//     } catch (err) {
+//         console.log(err);
+//     }
+//     console.log("Companies inserted");
+// };
+
+const volatility = 0.02;
+
+const f = (old_price) => {
+    const rnd = Math.random() - 0.4982;
     const change_percent = 2 * volatility * rnd;
     const change_amount = old_price * change_percent;
-
     const new_price = old_price + change_amount;
 
     if (new_price < 0.01) return new_price + Math.abs(change_amount) * 2;
     else if (new_price > 1000) return new_price - Math.abs(change_amount) * 2;
 
     return new_price;
-    };
+};
+// const getCompaniesCount = async () => {
+//     const con = await pool.getConnection();
+//     const [rows] = await con.query("SELECT COUNT(*) FROM empresas");
+//     con.release();
+//     return rows[0]["COUNT(*)"];
+// };
 
-    let seed = 30;
-    for (let i = 0; i < cantidad; i++) {
-    seed = f(seed);
-    console.log(seed);
+let seed = 100;
+const generateData = async () => {
+    try {
+
+    const con = await pool.getConnection();
+
+    let currentDate = new Date();
+    let lastMonth = new Date();
+
+    const insertStock = `INSERT INTO historial_empresas (id_empresa, valor, fecha) VALUES ?`;
+    const inserts = [];
+    // let count = await getCompaniesCount();
+    // console.log(count);
+    for (let j = 0; j < 10; j++) {
+        lastMonth.setMonth(currentDate.getMonth() - 1);
+        while (lastMonth <= currentDate) {
+            let company_id = j + 1;
+            for (let i = 0; i < 1440; i++) {
+                seed = f(seed);
+                let date =
+                    lastMonth.getFullYear() +
+                    "-" +
+                    (lastMonth.getMonth() + 1) +
+                    "-" +
+                    lastMonth.getDate();
+                inserts.push([company_id, seed, date]);
+            }
+
+            lastMonth.setDate(lastMonth.getDate() + 1);
+        }
     }
+
+    await con.query(insertStock, [inserts]);
+    con.release();
+  } catch (err) {
+    console.log(err);
 }
-
-/************************************************************************************* */
-import mysql from "mysql";
-// var db = new SQL.Database();
-const con = mysql.createConnection({
-  host: "127.0.0.1",
-  user: "root",
-  password: "",
-  database: "laravel",
-});
-
-const ENTRIES_PER_STOCK = 50000;
-const PARAM_LIMIT = 65536;
-const PARAMS_PER_ENTRY = 3;
-const ENTRIES_PER_INSERT = PARAM_LIMIT / PARAMS_PER_ENTRY;
-
-con.connect(function (err) {
- 
-  if (err) throw err;
-
-  const query = "INSERT INTO historial_empresas (id_empresa, valor, fecha) VALUES ?";
-  const now = new Date().setSeconds(0);
- 
-  // const stocks = [
-  //   "BBVA",
-  //   "CaixaBank",
-  //   "Cellnex",
-  //   "Ferrovial",
-  //   "Iberdrola",
-  //   "Inditex",
-  //   "Naturgy",
-  //   "Repsol",
-  //   "Santander",
-  //   "Telefonica",
-  // ];
-
-  const stocks = [1,2,3,4,5,6,7,8,9,10];
-
-  for (const stock of stocks) {
-    const data = generateStockData().map((data, i) => {
-      return [
-        stock,
-        data,
-        substractMinutesFromDate(now, ENTRIES_PER_STOCK - i),
-    ];
-    });
-    
-    times(ENTRIES_PER_INSERT, (i) => {
-
-      const bulk =data.slice(PARAM_LIMIT * i, PARAM_LIMIT * (i + 1));
-      
-      con.query(query,`(${bulk})`, function (err, result) {
-        if (err) throw err;
-        console.log("Number of records inserted: " + result.affectedRows);
-      });
-  
-    });
-    
-     console.log(data);
-  }
-  
-});
-
-const volatility = 0.02;
-const generateData = (old_price) => {
-  const rnd = Math.random() - 0.4982; // generate number, 0 <= x < 1.0
-  const change_percent = 2 * volatility * rnd;
-  const change_amount = old_price * change_percent;
-
-  const new_price = old_price + change_amount;
-
-  if (new_price < 0.01) return new_price + Math.abs(change_amount) * 2;
-  else if (new_price > 1000) return new_price - Math.abs(change_amount) * 2;
-
-  return new_price;
+    console.log("Stocks inserted");
 };
 
-const generateStockData = () => {
-  return unfold(generateData, 10, ENTRIES_PER_STOCK);
-};
-
-const unfold = (fn, seed, count) => {
-  const arr = [];
-  let current = seed;
-  for (let i = 0; i < count; i++) {
-    arr.push(current);
-    current = fn(current);
-  }
-
-  return arr;
-};
-
-const times = (n, fn) => {
-  for (let i = 0; i < n; i++) {
-    fn(i);
-  }
-};
-
-const MS_IN_MINUTE = 60000;
-const substractMinutesFromDate = (date, minutes) => {
-    let fecha =new Date(date - MS_IN_MINUTE * minutes);
-     fecha=fecha.toISOString().split("T")[0]+" 00:00:00";
-    // // console.log(fecha.toISOString().split("T")[0]+" 00:00:00");
-    return fecha;
-};
+const insertdata = async () => {    
+    try {
+        const con = await pool.getConnection();
+        const companies = [
+            "bbva",
+            "santander",
+            "repsol",
+            "iberdrola",
+            "inditex",
+            "caixabank",
+            "cellnex",
+            "naturgy",
+            "telefonica",
+            "ferrovial",
+        ];
+        let values = companies.map((name) => `('${name}')`);
+        await con.query(`INSERT INTO test (nombre) VALUES ${values}`);
+        con.release();
+    } catch (err) {
+        console.log(err);
+    }
+    console.log("Companies inserted");
+}
+// insertdata();
+generateData();
