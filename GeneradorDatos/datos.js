@@ -1,4 +1,4 @@
-import mysql from "mysql2/promise";
+import mysql from "mysql2";
 
 const pool = mysql.createPool({
     host: "127.0.0.1",
@@ -6,6 +6,22 @@ const pool = mysql.createPool({
     password: "",
     database: "laravel",
 });
+
+
+// var mysql = require('mysql');
+// var pool = mysql.createConnection({
+//   host: "localhost",
+//   user: "root",
+//   password: "",
+//   database: "laravel"
+
+// });
+
+// pool.connect(function(err) {
+//   if (err) throw err;
+//   console.log("Connected!");
+// });
+
 
 // const createDb = async () => {
 //     try {
@@ -84,10 +100,10 @@ const f = (old_price) => {
 
 let seed = 100;
 const generateData = async () => {
-    try {
+  
+    
 
     const con = await pool.getConnection();
-
     let currentDate = new Date();
     let lastMonth = new Date();
 
@@ -114,36 +130,15 @@ const generateData = async () => {
         }
     }
 
-    await con.query(insertStock, [inserts]);
-    con.release();
-  } catch (err) {
-    console.log(err);
-}
-    console.log("Stocks inserted");
+    con.query(insertStock, [inserts], function (err, result) {
+        if (err) throw err;
+        console.log("Number of records inserted: " + result.affectedRows);
+    });
+    con.end(function(err){});
+ 
+    
 };
 
-const insertdata = async () => {    
-    try {
-        const con = await pool.getConnection();
-        const companies = [
-            "bbva",
-            "santander",
-            "repsol",
-            "iberdrola",
-            "inditex",
-            "caixabank",
-            "cellnex",
-            "naturgy",
-            "telefonica",
-            "ferrovial",
-        ];
-        let values = companies.map((name) => `('${name}')`);
-        await con.query(`INSERT INTO test (nombre) VALUES ${values}`);
-        con.release();
-    } catch (err) {
-        console.log(err);
-    }
-    console.log("Companies inserted");
-}
+
 // insertdata();
 generateData();
