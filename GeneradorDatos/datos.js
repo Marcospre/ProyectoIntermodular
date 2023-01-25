@@ -1,12 +1,12 @@
-import mysql from "mysql2";
 
-const pool = mysql.createPool({
+import mysql from "mysql";
+
+const con = mysql.createConnection({
     host: "127.0.0.1",
     user: "root",
     password: "",
     database: "laravel",
 });
-
 
 // var mysql = require('mysql');
 // var pool = mysql.createConnection({
@@ -17,10 +17,7 @@ const pool = mysql.createPool({
 
 // });
 
-// pool.connect(function(err) {
-//   if (err) throw err;
-//   console.log("Connected!");
-// });
+
 
 
 // const createDb = async () => {
@@ -78,9 +75,10 @@ const pool = mysql.createPool({
 //     console.log("Companies inserted");
 // };
 
-const volatility = 0.02;
+
 
 const f = (old_price) => {
+    const volatility = 0.02;
     const rnd = Math.random() - 0.4982;
     const change_percent = 2 * volatility * rnd;
     const change_amount = old_price * change_percent;
@@ -98,43 +96,56 @@ const f = (old_price) => {
 //     return rows[0]["COUNT(*)"];
 // };
 
-let seed = 100;
-const generateData = async () => {
-  
+
+const generateData = () => {
+    
+    let seed = 100;
     
 
-    const con = await pool.getConnection();
-    let currentDate = new Date();
-    let lastMonth = new Date();
+    try{
+        con.connect(function(err) {
+            if (err) throw err;
+            console.log("Connected!");
+        
+        
 
-    const insertStock = `INSERT INTO historial_empresas (id_empresa, valor, fecha) VALUES ?`;
-    const inserts = [];
-    // let count = await getCompaniesCount();
-    // console.log(count);
-    for (let j = 0; j < 10; j++) {
-        lastMonth.setMonth(currentDate.getMonth() - 1);
-        while (lastMonth <= currentDate) {
-            let company_id = j + 1;
-            for (let i = 0; i < 1440; i++) {
-                seed = f(seed);
-                let date =
-                    lastMonth.getFullYear() +
-                    "-" +
-                    (lastMonth.getMonth() + 1) +
-                    "-" +
-                    lastMonth.getDate();
-                inserts.push([company_id, seed, date]);
+        // const con = await pool.getConnection();
+        let currentDate = new Date();
+        let lastMonth = new Date();
+
+        const insertStock = `INSERT INTO historial_empresas (id_empresa, valor, fecha) VALUES ?`;
+        const inserts = [];
+        // let count = await getCompaniesCount();
+        // console.log(count);
+        for (let j = 0; j < 10; j++) {
+            lastMonth.setMonth(currentDate.getMonth() - 1);
+            while (lastMonth <= currentDate) {
+                let company_id = j + 1;
+                for (let i = 0; i < 1440; i++) {
+                    seed = f(seed);
+                    let date =
+                        lastMonth.getFullYear() +
+                        "-" +
+                        (lastMonth.getMonth() + 1) +
+                        "-" +
+                        lastMonth.getDate();
+                    inserts.push([company_id, seed, date]);
+                }
+
+                lastMonth.setDate(lastMonth.getDate() + 1);
             }
-
-            lastMonth.setDate(lastMonth.getDate() + 1);
-        }
+        } 
+      
+        con.query(insertStock, [inserts], function (err, result) {
+            if (err) throw err;
+            console.log("Number of records inserted: " + result.affectedRows);
+        });
+        con.end();
+        });
+        
+    }catch(err){
+        con.end(); 
     }
-
-    con.query(insertStock, [inserts], function (err, result) {
-        if (err) throw err;
-        console.log("Number of records inserted: " + result.affectedRows);
-    });
-    con.end(function(err){});
  
     
 };
