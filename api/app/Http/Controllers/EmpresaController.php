@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Actual;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
 class EmpresaController extends Controller
@@ -11,6 +12,9 @@ class EmpresaController extends Controller
         $this->middleware('auth:api');
 
     }
+
+
+   
     /**
      * Display a listing of the resource.
      *
@@ -18,7 +22,7 @@ class EmpresaController extends Controller
      */
     public function index(Request $request)
     {
-        $empresas = Empresa::all();
+        $empresas = Actual::all();
         return $empresas;
     }
 

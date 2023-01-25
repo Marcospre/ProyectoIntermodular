@@ -9,6 +9,7 @@ window.onload = () => {
                 document.getElementById("wrap2").style.display = 'block';
                 aEmpresas = JSON.parse(localStorage.seleccionadas);
                 consultarEmpresas(aEmpresas,true);
+            
             }else{
                 document.getElementById('wrap').style.display = 'block';
                 document.getElementById("wrap2").style.display = 'none';
@@ -17,7 +18,18 @@ window.onload = () => {
         }
     
 
-
+        const companies = [
+            "bbva",
+            "santander",
+            "repsol",
+            "iberdrola",
+            "inditex",
+            "caixabank",
+            "cellnex",
+            "naturgy",
+            "telefonica",
+            "ferrovial",
+        ];
 // const data = null;
 
 // const xhr = new XMLHttpRequest();
@@ -58,12 +70,12 @@ function pruebaLocal(obj){
             console.log(res.id)
             if(selec.split("/")[0].replace("im","") == res.id){
                 id = selec.split("/")[0];
-                alt = res.nombre;
+                alt = companies[i];
                 guardar.push(id+"/"+alt);
                 document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
                                                                 <img src="Imagenes/${"im"+res.id}.png" id="imcard" class="card-img-top" alt="...">
                                                                 <div class="card-body">
-                                                                    <h5 class="card-title">${res.nombre}</h5>
+                                                                    <h5 class="card-title">${alt}</h5>
                                                                     <p class="card-text" id="valor${res.id}">${res.datos}</p>
                                                                     <a href="#" class="btn btn-primary">Go somewhere</a>
                                                                 </div>
@@ -89,12 +101,12 @@ function prueba(obj,empresas){
         obj.forEach(res=>{
             if(selec.getAttribute("id").replace("im","") == res.id){
                 id = selec.getAttribute("id");
-                alt = res.nombre;
+                alt = companies[i];
                 guardar.push(id+"/"+alt);
                 document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
                                                                 <img src="Imagenes/${"im"+res.id}.png" id="imcard" class="card-img-top" alt="...">
                                                                 <div class="card-body">
-                                                                    <h5 class="card-title">${res.nombre}</h5>
+                                                                    <h5 class="card-title">${alt}</h5>
                                                                     <p class="card-text" id="valor${res.id}">${res.datos}</p>
                                                                     <a href="#" class="btn btn-primary">Go somewhere</a>
                                                                 </div>
@@ -116,87 +128,98 @@ function prueba(obj,empresas){
     }
 
 }
-let consultar = document.getElementById('guardar');
-        consultar.addEventListener("click",function(){
-            document.getElementById("wrap").style.display = "none";
-            
-            let seleccionados = document.querySelectorAll('#selectContent>img');
-            
-            // consultarApi(seleccionados,false);
-            consultarEmpresas(seleccionados,false)
-        })
-function consultarApi(selec,local){
-    let fetchs = new Array();
-    let guardar = new Array();
-    let src;
-    let alt;
-    let id;
 
-    if(selec.length != 0){
-
-        for(let i = 0; i < selec.length; i++){
-            // /api/xxxx?empresas=x,y,z
-            if(!local){
-                fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${selec[i].id.replace("im","")}`));
-
-                
-                id = selec[i].getAttribute("id")
-                alt = document.getElementById(`${id}`).getAttribute("alt")
-
-                guardar.push(id+"/"+alt)
-                
-                
-            }else{
-                let sel = JSON.parse(localStorage.getItem('seleccionadas'))
-                let arr = sel[i].split("/");
-                id = arr[0];
-                alt = arr[1];
-                guardar.push(id+"/"+alt)
-                fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${id.replace("im","")}`));
-            }
-            
-            // pedirDato(seleccionados[i].getAttribute("id").replace("im",""));
-            // let mesag = seleccionados[i].getAttribute("src").replace("Imagenes/","").replace(".png","");
-            document.getElementById("resul").innerHTML += `<div class="card" id="empre${i+1}" style="width: 18rem;">
-                                                                <img src="Imagenes/${id}.png" id="imcard" class="card-img-top" alt="...">
-                                                                <div class="card-body">
-                                                                    <h5 class="card-title">${alt}</h5>
-                                                                    <p class="card-text" id="valor${id}"></p>
-                                                                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                                                                </div>
-                                                                </div>`;
-            
-            // setTimeout("Func1()", 4000);
-        }
-    }
-
-    if(localStorage.seleccionadas != undefined){
-        localStorage.removeItem('seleccionadas')
-        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
-        document.getElementById("wrap2").style.display = 'block';
-
-    }else{
-        localStorage.setItem('seleccionadas',JSON.stringify(guardar));
-        document.getElementById("wrap2").style.display = 'block';
-    }
-
-    Promise.all(fetchs)
-    .then(files =>{
-        files.forEach(file=>{
-            process(file.json())
-        })
-    }).catch(err=>{
-
-    });
-
-    const process = (prom) =>{
-        prom.then(data=>{
-            document.getElementById(`valorim${data.id}`).innerHTML = data.datos;
+function cambiarPagina(){
+    document.getElementById("wrap").style.display = "none";
+    document.getElementById("wrap2").style.display = "block";
+    let seleccionados = document.querySelectorAll('#selectContent>img');
+    consultarEmpresas(seleccionados,false)
+    document.getElementById("wrap").style.display = "none";
+    document.getElementById("wrap2").style.display = "block";
     
-        })
-    }
-   
+    
 }
+// let consultar = document.getElementById('guardar');
+//         consultar.addEventListener("click",function(){
+//             document.getElementById("wrap").style.display = "none";
+//             document.getElementById("wrap2").style.display = "block";
+//             let seleccionados = document.querySelectorAll('#selectContent>img');
+            
+//             // consultarApi(seleccionados,false);
+//             consultarEmpresas(seleccionados,false)
+//         })
+// function consultarApi(selec,local){
+//     let fetchs = new Array();
+//     let guardar = new Array();
+//     let src;
+//     let alt;
+//     let id;
+
+//     if(selec.length != 0){
+
+//         for(let i = 0; i < selec.length; i++){
+//             // /api/xxxx?empresas=x,y,z
+//             if(!local){
+//                 fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${selec[i].id.replace("im","")}`));
+
+                
+//                 id = selec[i].getAttribute("id")
+//                 alt = document.getElementById(`${id}`).getAttribute("alt")
+
+//                 guardar.push(id+"/"+alt)
+                
+                
+//             }else{
+//                 let sel = JSON.parse(localStorage.getItem('seleccionadas'))
+//                 let arr = sel[i].split("/");
+//                 id = arr[0];
+//                 alt = arr[1];
+//                 guardar.push(id+"/"+alt)
+//                 fetchs.push(fetch(`http://127.0.0.1:8000/api/empresas/${id.replace("im","")}`));
+//             }
+            
+//             // pedirDato(seleccionados[i].getAttribute("id").replace("im",""));
+//             // let mesag = seleccionados[i].getAttribute("src").replace("Imagenes/","").replace(".png","");
+//             document.getElementById("resul").innerHTML += `<div class="card" id="empre${i+1}" style="width: 18rem;">
+//                                                                 <img src="Imagenes/${id}.png" id="imcard" class="card-img-top" alt="...">
+//                                                                 <div class="card-body">
+//                                                                     <h5 class="card-title">${alt}</h5>
+//                                                                     <p class="card-text" id="valor${id}"></p>
+//                                                                     <a href="#" class="btn btn-primary">Go somewhere</a>
+//                                                                 </div>
+//                                                                 </div>`;
+            
+//             // setTimeout("Func1()", 4000);
+//         }
+//     }
+
+//     if(localStorage.seleccionadas != undefined){
+//         localStorage.removeItem('seleccionadas')
+//         localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+//         document.getElementById("wrap2").style.display = 'block';
+
+//     }else{
+//         localStorage.setItem('seleccionadas',JSON.stringify(guardar));
+//         document.getElementById("wrap2").style.display = 'block';
+//     }
+
+//     Promise.all(fetchs)
+//     .then(files =>{
+//         files.forEach(file=>{
+//             process(file.json())
+//         })
+//     }).catch(err=>{
+
+//     });
+
+//     const process = (prom) =>{
+//         prom.then(data=>{
+//             document.getElementById(`valorim${data.id}`).innerHTML = data.datos;
+    
+//         })
+//     }
+   
+// }
 
 
 

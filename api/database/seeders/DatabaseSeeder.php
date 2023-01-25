@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Date;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -34,8 +35,23 @@ class DatabaseSeeder extends Seeder
             ['nombre' => 'Santander', 'datos' => '4'],
             ['nombre' => 'Telefonica', 'datos' => '4']
         ];
+
+        $ini = [
+            ['id' => 1, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 2, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 3, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 4, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 5, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 6, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 7, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 8, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 9, 'datos' => 0 ,'fecha'=>null],
+            ['id' => 10, 'datos' => 0 ,'fecha'=>null],
+            
+        ];
         
         DB::table('empresas')->insert($users);
+        DB::table('actuales')->insert($ini);
 
     }
 }

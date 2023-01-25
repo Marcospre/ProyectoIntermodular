@@ -1,5 +1,5 @@
 import mysql from "mysql2/promise";
-
+import cron from "node-cron";
 const NOW = new Date(new Date().setSeconds(0));
 
 const pool = mysql.createPool({
@@ -41,6 +41,8 @@ const companies = [
     "ferrovial",
 ];
 
+const ids = [1,2,3,4,5,6,7,8,9,10];
+
 // const insertCompanies = async () => {
 //     await createDb();
 
@@ -59,9 +61,9 @@ const companies = [
 //     console.log("Companies inserted");
 // };
 
-const volatility = 0.02;
+// const volatility = 0.02;
 
-const f = (old_price) => {
+const f = (old_price,volatility) => {
     const rnd = Math.random() - 0.498;
     const change_percent = 2 * volatility * rnd;
     const change_amount = old_price * change_percent;
@@ -83,23 +85,39 @@ let seed = 100;
 
 const unfold = (seed, fn, n) => {
     let result = [];
-    for (let i = 0; i < n; i++) {
-        result.push(seed);
-        seed = fn(seed);
+    if(n != 1){
+        for (let i = 0; i < n; i++) {
+            result.push(seed);
+            seed = fn(seed,0.02);
+        }
+    }else{
+        for (let i = 0; i < n; i++) {
+            seed = fn(seed,0.3);
+            result.push(seed);
+        }
     }
     return result;
 };
 
 const ENTRIES_PER_COMPANY = 45000;
 
-const generateData = () => unfold(100, f, ENTRIES_PER_COMPANY);
+const generateData = (number) => unfold(100, f, number);
 
-const generateCompanyData = (id) => {
-    return generateData().map((price, offset) => [
-        id,
-        price,
-        substractMinutesFromDate(NOW, ENTRIES_PER_COMPANY - offset + 1),
-    ]);
+const generateCompanyData = (id,number) => {
+
+    if(number != 1){
+        return generateData(number).map((price, offset) => [
+            id,
+            price,
+            substractMinutesFromDate(NOW, ENTRIES_PER_COMPANY - offset + 1),
+        ]);
+    }else{
+        return generateData(number).map((price, offset) => [
+            id,
+            price,
+            new Date(),
+        ]);
+    }
 };
 
 const substractMinutesFromDate = (date, minutes) => {
@@ -116,31 +134,43 @@ const withConnection = async (fn) => {
     }
 };
 
-const insertCompanyData = async (id) => {
-    const data = generateCompanyData(id);
+const insertCompanyData = async (id,number) => {
+    const data = generateCompanyData(id,number);
     console.log(data)
     await withConnection(async (con) => {
         const query = `INSERT INTO historial_empresas (id_empresa, valor, fecha) VALUES ?`;
         await con.query(query, [data]);
+        if(number == 1){
+            const query1 = `update actuales set datos = ?, fecha = ? where id = ?`;
+            data.forEach(async ele=>{
+                await con.query(query1,[ele[1],ele[2],ele[0]]);
+            })
+        }
     });
 };
 
-const insertCompaniesData = async () => {
-    const ids = companies.map((_, id) => id);
-    const inserts = ids.map((id) => insertCompanyData(id));
+const insertCompaniesData = async (number) => {
+    // const ids = companies.map((_, id) => id);
+    const inserts = ids.map((id) => insertCompanyData(id,number));
     await Promise.all(inserts);
 };
 
-console.time("Benchmark");
+
+
+// console.time("Benchmark");
 
 try {
     // await createDb();
     // await insertCompanies()
-    await insertCompaniesData();
+    await insertCompaniesData(ENTRIES_PER_COMPANY);
+    cron.schedule("* * * * * ",() =>{
+        insertCompaniesData(1);
+        console.log("insetado a fecha:" +new Date());
+   });
 } catch (e) {
     console.error(e)
 }
 
-console.timeEnd("Benchmark");
+// console.timeEnd("Benchmark");
 
-process.exit()
+// process.exit()
