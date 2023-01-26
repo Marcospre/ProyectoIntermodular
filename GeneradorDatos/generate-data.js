@@ -165,7 +165,7 @@ try {
     await insertCompaniesData(ENTRIES_PER_COMPANY);
     cron.schedule("* * * * * ",() =>{
         insertCompaniesData(1);
-        console.log("insetado a fecha:" +new Date());
+        console.log("insertado a fecha: " +new Date());
    });
 } catch (e) {
     console.error(e)
