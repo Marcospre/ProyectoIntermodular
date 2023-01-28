@@ -19,16 +19,17 @@ window.onload = () => {
     
 
         const companies = [
-            "bbva",
-            "santander",
-            "repsol",
-            "iberdrola",
-            "inditex",
-            "caixabank",
-            "cellnex",
-            "naturgy",
-            "telefonica",
-            "ferrovial",
+            "BBVA",
+            "Caixabank",
+            "Cellnex",
+            "Ferrovial",
+            "Iberdrola",
+            "Inditex",
+            "Naturgy",
+            "Repsol",
+            "Santander",
+            "Telefonica",
+            
         ];
 // const data = null;
 
@@ -59,6 +60,8 @@ function consultarEmpresas(empresas,local){
      
    
 }
+
+
 function pruebaLocal(obj){
     let guardar = new Array();
     let i = 1;
@@ -70,7 +73,7 @@ function pruebaLocal(obj){
             
             if(selec.split("/")[0].replace("im","") == res.id){
                 id = selec.split("/")[0];
-                alt = companies[i];
+                alt = companies[res.id-1];
                 guardar.push(id+"/"+alt);
                 document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
                                                                 <img src="Imagenes/${"im"+res.id}.png" id="imcard" class="card-img-top" alt="...">
@@ -103,7 +106,7 @@ function prueba(obj,empresas){
         obj.forEach(res=>{
             if(selec.getAttribute("id").replace("im","") == res.id){
                 id = selec.getAttribute("id");
-                alt = companies[i];
+                alt = companies[res.id-1];
                 guardar.push(id+"/"+alt);
                 document.getElementById("resul").innerHTML += `<div class="card" id="empre${i}" style="width: 18rem;">
                                                                 <img src="Imagenes/${"im"+res.id}.png" id="imcard" class="card-img-top" alt="...">
@@ -139,8 +142,18 @@ function actualizarCard(obj){
         obj.forEach(res=>{
             if(selec.split("/")[0].replace("im","") == res.id){
                 id = selec.split("/")[0];
-                alt = companies[i];
-                document.getElementById(`${"valor"+res.id}`).innerHTML = res.datos;
+               
+                alt = companies[res.id-1];
+                let anterior = document.getElementById(`${"valor"+res.id}`).innerHTML;
+                console.log(anterior)
+                console.log(res.datos)
+                if(res.datos >= anterior){
+                    document.getElementById(`${"valor"+res.id}`).innerHTML = res.datos;
+                    document.getElementById(`${"valor"+res.id}`).style = 'color:green';
+                }else{
+                    document.getElementById(`${"valor"+res.id}`).innerHTML = res.datos;
+                    document.getElementById(`${"valor"+res.id}`).style = 'color:red';
+                }
                 i++;
             }
         })

@@ -156,13 +156,30 @@ const insertCompaniesData = async (number) => {
 };
 
 
+const inicializarDatos = async () =>{
+    try {
+        const con = await pool.getConnection();
+        const query1 = `SELECT * FROM historial_empresas ORDER BY fecha DESC LIMIT 10`;
+        const query2 = `update actuales set datos = ?, fecha = ? where id = ?`
+        const [rows] = await con.query(query1);
+        console.log(rows)
+        rows.forEach(async ele=>{
+            await con.query(query2,[ele.valor,ele.fecha,ele.id_empresa]);
+            console.log("insertado en fila: "+ele.id_empresa);
+        })
 
+        con.release();
+    } catch (e) {
+        console.error(e)
+    }
+}
 // console.time("Benchmark");
 
 try {
     // await createDb();
     // await insertCompanies()
     await insertCompaniesData(ENTRIES_PER_COMPANY);
+    await inicializarDatos();
     cron.schedule("* * * * * ",() =>{
         insertCompaniesData(1);
         console.log("insertado a fecha: " +new Date());
