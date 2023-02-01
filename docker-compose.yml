@@ -1,6 +1,32 @@
 version: '3.7'
 
 services:
+
+  front:
+    build: ./Front
+    ports:
+      - 80:80
+    depends_on:
+      - db
+    networks:
+      - MarkOSnet
+
+  generador:
+    build: ./GeneradorDatos
+    depends_on:
+      - db
+    networks:
+      - MarkOSnet
+
+  laravel:
+    build: ./api
+    command: php artisan migrate:fresh --seed
+    ports:
+      - 81:80
+    depends_on:
+      - db
+    networks:
+      - MarkOSnet
   db:
     image: mysql
     command: --max_allowed_packet=325058560

@@ -14,4 +14,5 @@ RUN npm install
 EXPOSE 3000
 
 # Ejecutar la aplicación
-CMD ["npm", "start"]
+# CMD ["npm", "start"]
+CMD [ "node","generate-data.js" ]
