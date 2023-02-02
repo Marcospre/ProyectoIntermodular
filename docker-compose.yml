@@ -13,6 +13,8 @@ services:
 
   generador:
     build: ./GeneradorDatos
+    # ports:
+    #   - 3000:80
     depends_on:
       - db
     networks:
@@ -20,9 +22,10 @@ services:
 
   laravel:
     build: ./api
-    command: php artisan migrate:fresh --seed
+    # command: php artisan migrate:fresh --seed
+    image: laravel.prod
     ports:
-      - 81:80
+      - 8000:80
     depends_on:
       - db
     networks:
@@ -37,6 +40,7 @@ services:
       MYSQL_DATABASE: stocks
       MYSQL_PASSWORD: stocks
     volumes: 
+      # - ./dump:/docker-entrypoint-initdb.d
       - /mysql:/var/lib/mysql
     ports:
       - 3306:3306
@@ -55,7 +59,7 @@ services:
           networks:
               - MarkOSnet
           ports:
-              - 8000:80
+              - 83:80
 networks:
     MarkOSnet:
         driver: bridge

@@ -3,7 +3,7 @@ import cron from "node-cron";
 const NOW = new Date(new Date().setSeconds(0));
 
 const pool = mysql.createPool({
-    host: "127.0.0.1",
+    host: "db",
     user: "stocks",
     password: "stocks",
     database: "stocks",

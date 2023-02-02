@@ -41,9 +41,7 @@ COPY php.ini /etc/php/8.2/cli/conf.d/laravel.ini
 RUN chmod -R 775 /src/app/ \
     && chown -R www-data:www-data /src/app/
 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
-# RUN php artisan migrate:fresh --seed
-
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"] && php /src/app/artisan migrate:fresh --seed
 
 
 

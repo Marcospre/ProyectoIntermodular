@@ -12,6 +12,7 @@ RUN npm install
 
 # Exponer el puerto predeterminado para la aplicación
 EXPOSE 3000
+# EXPOSE 3306
 
 # Ejecutar la aplicación
 # CMD ["npm", "start"]
