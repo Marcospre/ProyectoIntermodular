@@ -36,12 +36,22 @@ WORKDIR /src/app
 COPY [".", "/src/app"]
 RUN cd /src/app \
     && composer install 
+
 COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
 COPY php.ini /etc/php/8.2/cli/conf.d/laravel.ini
 RUN chmod -R 775 /src/app/ \
     && chown -R www-data:www-data /src/app/
 
-CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"] && php /src/app/artisan migrate:fresh --seed
+# ENV COMPOSER_ALLOW_SUPERUSER=1
+# RUN  composer require php-open-source-saver/jwt-aut \
+#     && php artisan vendor:publish --provider="PHPOpenSourceSaver\JWTAuth\Providers\LaravelServiceProvider" \
+#     && php artisan jwt:secret
+
+# RUN php /src/app/artisan migrate:fresh --seed
+RUN a2enmod rewrite
+# RUN php /src/app/artisan migrate:fresh --seed
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"] 
+# && php artisan migrate:fresh --seed
 
 
 

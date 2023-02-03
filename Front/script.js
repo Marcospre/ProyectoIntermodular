@@ -46,13 +46,13 @@ function consultarEmpresas(empresas,local){
       }; 
     
       if(!local){
-        fetch('http://127.0.0.1:8000/api/empresas', options)
+        fetch('http://localhost:80/api/empresas', options)
             .then(response => response.json())
             .then(response => prueba(response,empresas))
             .catch(err => console.error(err));
       }else{
         
-        fetch('http://127.0.0.1:8000/api/empresas', options)
+        fetch('http://localhost:80/api/empresas', options)
             .then(response => response.json())
             .then(response => pruebaLocal(response))
             .catch(err => console.error(err));
@@ -167,7 +167,7 @@ function refrescarDatos(){
           Authorization: 'Bearer '+sessionStorage.token
         }
       }; 
-      fetch('http://127.0.0.1:8000/api/empresas', options)
+      fetch('http://localhost:80/api/empresas', options)
             .then(response => response.json())
             .then(response => actualizarCard(response))
             .catch(err => console.error(err));
@@ -230,7 +230,7 @@ async function logearUsuario(){
     const password = document.querySelector("#passL");
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/login", {
+        const response = await fetch("http://localhost:80/api/login", {
           method: 'POST',
           headers: {},
           body: new URLSearchParams({
@@ -258,7 +258,7 @@ async function registrarUsuario(){
     const password = document.querySelector("#passR");
 
     try {
-        const response = await fetch("http://127.0.0.1:8000/api/register?name=", {
+        const response = await fetch("http://localhost:80/api/register?name=", {
           method: 'POST',
           headers: {},
           body: new URLSearchParams({

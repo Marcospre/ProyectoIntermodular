@@ -4,8 +4,6 @@ services:
 
   front:
     build: ./Front
-    ports:
-      - 80:80
     depends_on:
       - db
     networks:
@@ -20,12 +18,23 @@ services:
     networks:
       - MarkOSnet
 
-  laravel:
+  laravel1:
     build: ./api
     # command: php artisan migrate:fresh --seed
     image: laravel.prod
-    ports:
-      - 8000:80
+    # ports:
+    #   - 8000:80
+    depends_on:
+      - db
+    networks:
+      - MarkOSnet
+
+  laravel2:
+    build: ./api
+    # command: php artisan migrate:fresh --seed
+    image: laravel.prod
+    # ports:
+    #   - 8000:80
     depends_on:
       - db
     networks:
@@ -33,7 +42,6 @@ services:
   db:
     image: mysql
     command: --max_allowed_packet=325058560
-    restart: always
     environment: 
       MYSQL_ROOT_PASSWORD: stocks
       MYSQL_USER: stocks
@@ -51,6 +59,7 @@ services:
           depends_on:
               - db
           image: 'phpmyadmin/phpmyadmin:latest'
+          restart: always
           environment:
               PMA_HOST: db
               PMA_PORT: 3306
@@ -60,6 +69,17 @@ services:
               - MarkOSnet
           ports:
               - 83:80
+  proxy:
+    image: nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - MarkOSnet
+    depends_on:
+      - laravel1
+      - laravel2
 networks:
     MarkOSnet:
         driver: bridge
