@@ -6,6 +6,8 @@ services:
     build: ./Front
     depends_on:
       - db
+    volumes:
+      - ./Front:/usr/share/nginx/html
     networks:
       - MarkOSnet
 
@@ -13,6 +15,8 @@ services:
     build: ./GeneradorDatos
     # ports:
     #   - 3000:80
+    volumes:
+      - ./GeneradorDatos:/app
     depends_on:
       - db
     networks:
@@ -22,6 +26,8 @@ services:
     build: ./api
     # command: php artisan migrate:fresh --seed
     image: laravel.prod
+    # volumes:
+    #   - ./api:/src/app
     # ports:
     #   - 8000:80
     depends_on:
@@ -33,6 +39,8 @@ services:
     build: ./api
     # command: php artisan migrate:fresh --seed
     image: laravel.prod
+    # volumes:
+    #   - ./api:/src/app
     # ports:
     #   - 8000:80
     depends_on:

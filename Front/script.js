@@ -1,3 +1,5 @@
+// import Chart from 'chart.js/auto'
+
 window.onload = () => {
             if(sessionStorage.token != undefined){
                 document.getElementById("myModal").style.display = 'none';
@@ -61,6 +63,83 @@ function consultarEmpresas(empresas,local){
    
 }
 
+function cerrarGrafico(){
+    document.getElementById("myModal").style.display = "none";
+}
+
+function grafico(data){
+    const fechas = data.map(item => item.fecha);
+    const valores = data.map(item => item.valor);
+    document.getElementById("myModal").style.display = "block";
+    document.getElementById("register").style.display = "none";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("historial").style.display = "block";
+    // document.getElementById("content").innerHTML += 
+    // `<div id="grafico">
+    //     <canvas id="historial"></canvas>
+    //     <button onclick="cerrarGrafico()">Salir</button>
+    // </div>`;
+  
+    var ctx = document.getElementById('historial');
+    var myChart = new Chart(
+        ctx,
+        {
+            type:'line',
+            data: {
+                labels: fechas,
+                datasets: [{
+                    label: 'Valor',
+                    data: valores,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options:{
+                scales:{
+                    xAxes:[
+                        {
+                            type: "time",
+                            time: {
+                                parser: "YYYY-DD-MM h:m:s",
+                                unit: "day",
+                                displayFormats:{
+                                    day: "MMM DD"
+                                }
+                            }
+                        }
+                    ],
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    ]
+                }
+            }
+
+
+
+        }
+    )
+}
+
+function mostrarGrafico(id){
+    const options = {
+        method: 'GET',
+        headers: {
+          Authorization: 'Bearer '+sessionStorage.token
+        }
+      }; 
+
+    fetch(`http://localhost:80/api/empresas/${id}`, options)
+      .then(response => response.json())
+      .then(response => grafico(response))
+      .catch(err => console.error(err));
+
+
+}
 
 function pruebaLocal(obj){
     let guardar = new Array();
@@ -80,7 +159,7 @@ function pruebaLocal(obj){
                                                                 <div class="card-body">
                                                                     <h5 class="card-title">${alt}</h5>
                                                                     <p class="card-text" id="valor${res.id}">${res.datos}</p>
-                                                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                                                    <a href="#" class="btn btn-primary" onclick="mostrarGrafico(${res.id})">Grafico</a>
                                                                 </div>
                                                                 </div>`;
                 i++;
@@ -113,7 +192,7 @@ function prueba(obj,empresas){
                                                                 <div class="card-body">
                                                                     <h5 class="card-title">${alt}</h5>
                                                                     <p class="card-text" id="valor${res.id}">${res.datos}</p>
-                                                                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                                                                    <a href="#" class="btn btn-primary" onclick="mostrarGrafico(${res.id})">Grafico</a>
                                                                 </div>
                                                                 </div>`;
                 i++;

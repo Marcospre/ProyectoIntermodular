@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Actual;
+use App\Models\Historico;
 use Illuminate\Http\Request;
 use App\Models\Empresa;
 class EmpresaController extends Controller
@@ -59,7 +60,8 @@ class EmpresaController extends Controller
      */
     public function show($id)
     {
-        $empresa = Empresa::findOrFail($id);
+        $historico = new Historico;
+        $empresa = $historico->datos($id);
         return $empresa;
     }
 

@@ -170,6 +170,11 @@
      height: 300px;
   }
 
+  #grafico{
+    width: 1000px;
+     
+  }
+
 #emailL, #passL, #nameR, #emailR, #passR{
     margin: 5%;
 }
