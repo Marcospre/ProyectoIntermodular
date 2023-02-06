@@ -171,6 +171,7 @@
   }
 
   #grafico{
+    display: none;
     width: 1000px;
      
   }
@@ -181,6 +182,13 @@
 
 #register{
     display: none;
+}
+
+#opciones{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    width: 25%;
 }
 
   

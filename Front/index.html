@@ -71,7 +71,11 @@
                     <a href="#" onclick="cambiarModal(false)">Login</a>
                 </div>
                 <div id="grafico">
-                     <canvas id="historial"></canvas>
+                    <div id="opciones">
+                        <div onclick="cambiarGrafico(1)">Dia</div>
+                        <div onclick="cambiarGrafico(0)">Minuto</div>
+                    </div>
+                    <canvas id="historial"></canvas>
                     <button onclick="cerrarGrafico()">Salir</button>
                 </div>
             

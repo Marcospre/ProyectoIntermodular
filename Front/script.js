@@ -48,13 +48,13 @@ function consultarEmpresas(empresas,local){
       }; 
     
       if(!local){
-        fetch('http://localhost:80/api/empresas', options)
+        fetch('http://hz114478:80/api/empresas', options)
             .then(response => response.json())
             .then(response => prueba(response,empresas))
             .catch(err => console.error(err));
       }else{
         
-        fetch('http://localhost:80/api/empresas', options)
+        fetch('http://hz114478:80/api/empresas', options)
             .then(response => response.json())
             .then(response => pruebaLocal(response))
             .catch(err => console.error(err));
@@ -62,33 +62,40 @@ function consultarEmpresas(empresas,local){
      
    
 }
+var myChart 
+var dataGuar;
 
-function cerrarGrafico(){
-    document.getElementById("myModal").style.display = "none";
-}
+function cambiarGrafico(opcion){
+    const valores = null;
+    const fechas = null;
+    if(opcion == 1){
+        const result = dataGuar.reduce((acc,curr) => {
+            const date = curr.fecha.split(' ')[0];
+            const time = curr.fecha.split(' ')[1];
 
-function grafico(data){
-    const fechas = data.map(item => item.fecha);
-    const valores = data.map(item => item.valor);
-    document.getElementById("myModal").style.display = "block";
-    document.getElementById("register").style.display = "none";
-    document.getElementById("login").style.display = "none";
-    document.getElementById("historial").style.display = "block";
-    // document.getElementById("content").innerHTML += 
-    // `<div id="grafico">
-    //     <canvas id="historial"></canvas>
-    //     <button onclick="cerrarGrafico()">Salir</button>
-    // </div>`;
-  
+            if(!acc.fecha[date] || time > acc.fecha[date].time){
+                acc[date] = {date: curr.fecha};
+            }
+
+            return acc;
+        },{});
+
+        fechas = result.map(item => item.fecha);
+        valores = result.map(item => item.valor);
+    }else if(opcion == 0){
+        fechas = dataGuar.map(item => item.fecha);
+        valores = dataGuar.map(item => item.valor);
+    }
+
     var ctx = document.getElementById('historial');
-    var myChart = new Chart(
+    myChart = new Chart(
         ctx,
         {
             type:'line',
             data: {
                 labels: fechas,
                 datasets: [{
-                    label: 'Valor',
+                    label: 'Valor(€)',
                     data: valores,
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
                     borderColor: 'rgba(255, 99, 132, 1)',
@@ -125,7 +132,76 @@ function grafico(data){
     )
 }
 
-function mostrarGrafico(id){
+function cerrarGrafico(){
+    document.getElementById("myModal").style.display = "none";
+    myChart.destroy();
+}
+
+function grafico(data){
+    const fechas = data.map(item => item.fecha);
+    const valores = data.map(item => item.valor);
+    dataGuar = data;
+    document.getElementById("myModal").style.display = "block";
+    document.getElementById("register").style.display = "none";
+    document.getElementById("login").style.display = "none";
+    document.getElementById("grafico").style.display = "block";
+    document.getElementById("contentModal").style.top = "40%";
+    document.getElementById("contentModal").style.left = "30%";
+    // document.getElementById("content").innerHTML += 
+    // `<div id="grafico">
+    //     <canvas id="historial"></canvas>
+    //     <button onclick="cerrarGrafico()">Salir</button>
+    // </div>`;
+    
+
+    var ctx = document.getElementById('historial');
+    myChart = new Chart(
+        ctx,
+        {
+            type:'line',
+            data: {
+                labels: fechas,
+                datasets: [{
+                    label: 'Valor(€)',
+                    data: valores,
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options:{
+                scales:{
+                    xAxes:[
+                        {
+                            type: "time",
+                            time: {
+                                parser: "YYYY-DD-MM h:m:s",
+                                unit: "day",
+                                displayFormats:{
+                                    day: "MMM DD"
+                                }
+                            }
+                        }
+                    ],
+                    yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true
+                            }
+                        }
+                    ]
+                }
+            }
+
+
+
+        }
+    )
+}
+
+
+
+function mostrarGrafico(id,opcion){
     const options = {
         method: 'GET',
         headers: {
@@ -133,9 +209,9 @@ function mostrarGrafico(id){
         }
       }; 
 
-    fetch(`http://localhost:80/api/empresas/${id}`, options)
+    fetch(`http://hz114478:80/api/empresas/${id}`, options)
       .then(response => response.json())
-      .then(response => grafico(response))
+      .then(response => grafico(response,opcion))
       .catch(err => console.error(err));
 
 
@@ -246,7 +322,7 @@ function refrescarDatos(){
           Authorization: 'Bearer '+sessionStorage.token
         }
       }; 
-      fetch('http://localhost:80/api/empresas', options)
+      fetch('http://hz114478:80/api/empresas', options)
             .then(response => response.json())
             .then(response => actualizarCard(response))
             .catch(err => console.error(err));
@@ -309,7 +385,7 @@ async function logearUsuario(){
     const password = document.querySelector("#passL");
 
     try {
-        const response = await fetch("http://localhost:80/api/login", {
+        const response = await fetch("http://hz114478:80/api/login", {
           method: 'POST',
           headers: {},
           body: new URLSearchParams({
@@ -337,7 +413,7 @@ async function registrarUsuario(){
     const password = document.querySelector("#passR");
 
     try {
-        const response = await fetch("http://localhost:80/api/register?name=", {
+        const response = await fetch("http://hz114478:80/api/register?name=", {
           method: 'POST',
           headers: {},
           body: new URLSearchParams({
