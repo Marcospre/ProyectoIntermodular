@@ -81,38 +81,42 @@ const getCompaniesCount = async () => {
     return rows[0]["COUNT(*)"];
 };
 
-let seed = 100;
+var anterior = [0,0,0,0,0,0,0,0,0,0];
 
-const unfold = (seed, fn, n) => {
+const unfold = (seed, fn, n, id) => {
     let result = [];
     if(n != 1){
         for (let i = 0; i < n; i++) {
             result.push(seed);
             seed = fn(seed,0.02);
         }
+        anterior[id-1]= seed;
+        console.log(anterior)
     }else{
         for (let i = 0; i < n; i++) {
-            seed = fn(seed,0.3);
-            result.push(seed);
+            anterior[id-1] = fn(anterior[id-1],0.02);
+            result.push(anterior[id-1]);
+            
         }
+        console.log(anterior)
     }
     return result;
 };
 
 const ENTRIES_PER_COMPANY = 45000;
 
-const generateData = (number) => unfold(100, f, number);
+const generateData = (number,id) => unfold(100, f, number,id);
 
 const generateCompanyData = (id,number) => {
 
     if(number != 1){
-        return generateData(number).map((price, offset) => [
+        return generateData(number,id).map((price, offset) => [
             id,
             price,
             substractMinutesFromDate(NOW, ENTRIES_PER_COMPANY - offset + 1),
         ]);
     }else{
-        return generateData(number).map((price, offset) => [
+        return generateData(number,id).map((price, offset) => [
             id,
             price,
             new Date(),

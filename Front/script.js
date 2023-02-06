@@ -3,19 +3,27 @@
 window.onload = () => {
             if(sessionStorage.token != undefined){
                 document.getElementById("myModal").style.display = 'none';
+                if(localStorage.seleccionadas != undefined){
+                    document.getElementById("wrap").style.display = 'none';
+                    document.getElementById("wrap2").style.display = 'block';
+                    aEmpresas = JSON.parse(localStorage.seleccionadas);
+                    consultarEmpresas(aEmpresas,true);
+                
+                }else{
+                    document.getElementById('wrap').style.display = 'block';
+                    document.getElementById("wrap2").style.display = 'none';
+                }
             }else{
                 document.getElementById("myModal").style.display = 'block';
+                if(localStorage.seleccionadas != undefined){
+                    document.getElementById("wrap").style.display = 'none';
+                    document.getElementById("wrap2").style.display = 'block';
+                }else{
+                    document.getElementById('wrap').style.display = 'block';
+                    document.getElementById("wrap2").style.display = 'none';
+                }
             }
-            if(localStorage.seleccionadas != undefined){
-                document.getElementById("wrap").style.display = 'none';
-                document.getElementById("wrap2").style.display = 'block';
-                aEmpresas = JSON.parse(localStorage.seleccionadas);
-                consultarEmpresas(aEmpresas,true);
             
-            }else{
-                document.getElementById('wrap').style.display = 'block';
-                document.getElementById("wrap2").style.display = 'none';
-            }
             
         }
     
@@ -48,13 +56,13 @@ function consultarEmpresas(empresas,local){
       }; 
     
       if(!local){
-        fetch('http://hz114478:80/api/empresas', options)
+        fetch('http://localhost:80/api/empresas', options)
             .then(response => response.json())
             .then(response => prueba(response,empresas))
             .catch(err => console.error(err));
       }else{
         
-        fetch('http://hz114478:80/api/empresas', options)
+        fetch('http://localhost:80/api/empresas', options)
             .then(response => response.json())
             .then(response => pruebaLocal(response))
             .catch(err => console.error(err));
@@ -66,25 +74,32 @@ var myChart
 var dataGuar;
 
 function cambiarGrafico(opcion){
-    const valores = null;
-    const fechas = null;
+    let valores = null;
+    let fechas = null;
     if(opcion == 1){
         const result = dataGuar.reduce((acc,curr) => {
             const date = curr.fecha.split(' ')[0];
             const time = curr.fecha.split(' ')[1];
 
-            if(!acc.fecha[date] || time > acc.fecha[date].time){
-                acc[date] = {date: curr.fecha};
+            if(!acc[date] || time > acc[date].time){
+                acc[date] = {
+                    valor: curr.valor,
+                    date: curr.fecha
+                };
             }
 
             return acc;
         },{});
-
-        fechas = result.map(item => item.fecha);
-        valores = result.map(item => item.valor);
+        console.log(result)
+        fechas = Object.values(result).map(item => item.date);
+        valores = Object.values(result).map(item => item.valor);
     }else if(opcion == 0){
         fechas = dataGuar.map(item => item.fecha);
         valores = dataGuar.map(item => item.valor);
+    }
+
+    if(myChart != null){
+        myChart.destroy();
     }
 
     var ctx = document.getElementById('historial');
@@ -109,11 +124,12 @@ function cambiarGrafico(opcion){
                             type: "time",
                             time: {
                                 parser: "YYYY-DD-MM h:m:s",
-                                unit: "day",
+                                unit: "minute",
                                 displayFormats:{
-                                    day: "MMM DD"
+                                    day: 'MM/DD h:mm A'
                                 }
-                            }
+                            },
+                            position: 'bottom'
                         }
                     ],
                     yAxes: [
@@ -145,8 +161,9 @@ function grafico(data){
     document.getElementById("register").style.display = "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("grafico").style.display = "block";
-    document.getElementById("contentModal").style.top = "40%";
+    document.getElementById("contentModal").style.top = "30%";
     document.getElementById("contentModal").style.left = "30%";
+    document.getElementById("titulo").src = `Imagenes/im${data[0].id_empresa}.png`;
     // document.getElementById("content").innerHTML += 
     // `<div id="grafico">
     //     <canvas id="historial"></canvas>
@@ -176,11 +193,12 @@ function grafico(data){
                             type: "time",
                             time: {
                                 parser: "YYYY-DD-MM h:m:s",
-                                unit: "day",
+                                unit: "minute",
                                 displayFormats:{
-                                    day: "MMM DD"
+                                    day: 'MM/DD h:mm A'
                                 }
-                            }
+                            },
+                            position: 'bottom'
                         }
                     ],
                     yAxes: [
@@ -209,7 +227,7 @@ function mostrarGrafico(id,opcion){
         }
       }; 
 
-    fetch(`http://hz114478:80/api/empresas/${id}`, options)
+    fetch(`http://localhost:80/api/empresas/${id}`, options)
       .then(response => response.json())
       .then(response => grafico(response,opcion))
       .catch(err => console.error(err));
@@ -218,6 +236,7 @@ function mostrarGrafico(id,opcion){
 }
 
 function pruebaLocal(obj){
+    document.getElementById("resul").innerHTML = "";
     let guardar = new Array();
     let i = 1;
     let sel = JSON.parse(localStorage.getItem('seleccionadas'))
@@ -292,7 +311,7 @@ function prueba(obj,empresas){
 function actualizarCard(obj){
     let i = 1;
     let sel = JSON.parse(localStorage.getItem('seleccionadas'));
-    console.log("estoy dentro")
+
     sel.forEach(selec=>{
         obj.forEach(res=>{
             if(selec.split("/")[0].replace("im","") == res.id){
@@ -300,8 +319,7 @@ function actualizarCard(obj){
                
                 alt = companies[res.id-1];
                 let anterior = document.getElementById(`${"valor"+res.id}`).innerHTML;
-                console.log(anterior)
-                console.log(res.datos)
+
                 if(res.datos >= anterior){
                     document.getElementById(`${"valor"+res.id}`).innerHTML = res.datos;
                     document.getElementById(`${"valor"+res.id}`).style = 'color:green';
@@ -322,7 +340,7 @@ function refrescarDatos(){
           Authorization: 'Bearer '+sessionStorage.token
         }
       }; 
-      fetch('http://hz114478:80/api/empresas', options)
+      fetch('http://localhost:80/api/empresas', options)
             .then(response => response.json())
             .then(response => actualizarCard(response))
             .catch(err => console.error(err));
@@ -385,7 +403,7 @@ async function logearUsuario(){
     const password = document.querySelector("#passL");
 
     try {
-        const response = await fetch("http://hz114478:80/api/login", {
+        const response = await fetch("http://localhost:80/api/login", {
           method: 'POST',
           headers: {},
           body: new URLSearchParams({
@@ -405,6 +423,15 @@ async function logearUsuario(){
         console.error(err);
       }
 
+      if(localStorage.seleccionadas != undefined){
+        
+        document.getElementById("wrap").style.display = 'none';
+        document.getElementById("wrap2").style.display = 'block';
+        
+        aEmpresas = JSON.parse(localStorage.seleccionadas);
+        consultarEmpresas(aEmpresas,true);
+    }
+
 }
 
 async function registrarUsuario(){
@@ -413,7 +440,7 @@ async function registrarUsuario(){
     const password = document.querySelector("#passR");
 
     try {
-        const response = await fetch("http://hz114478:80/api/register?name=", {
+        const response = await fetch("http://localhost:80/api/register?name=", {
           method: 'POST',
           headers: {},
           body: new URLSearchParams({
@@ -427,7 +454,7 @@ async function registrarUsuario(){
           const result = await response.json();
           setToken(result.authorisation.token);
           document.getElementById("myModal").style.display = "none";
-          console.log(result);
+
           
         }
       } catch (err) {

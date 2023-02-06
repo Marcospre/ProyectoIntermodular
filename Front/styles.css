@@ -187,8 +187,22 @@
 #opciones{
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    
     width: 25%;
+}
+#opciones>div{
+    cursor: pointer;
+    margin: 5%;
+}
+#opciones>div:hover{
+    color: blue;
+    
+}
+
+#cabecera{
+    display: flex;
+    justify-content: center;
+    
 }
 
   
