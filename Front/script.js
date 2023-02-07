@@ -76,22 +76,32 @@ var dataGuar;
 function cambiarGrafico(opcion){
     let valores = null;
     let fechas = null;
+
+    if(myChart != null){
+        myChart.destroy();
+    }
+
     if(opcion == 1){
-        const result = dataGuar.reduce((acc,curr) => {
-            const date = curr.fecha.split(' ')[0];
-            const time = curr.fecha.split(' ')[1];
+        // const result = dataGuar.reduce((acc,curr) => {
+        //     const date = curr.fecha.split(' ')[0];
+        //     const time = curr.fecha.split(' ')[1];
 
-            if(!acc[date] || time > acc[date].time){
-                acc[date] = {
-                    valor: curr.valor,
-                    date: curr.fecha
-                };
-            }
+        //     if(!acc[date] || time > acc[date].time){
+        //         acc[date] = {
+        //             valor: curr.valor,
+        //             date: curr.fecha
+        //         };
+        //     }
 
-            return acc;
-        },{});
-
-        fechas = Object.values(result).map(item => item.date);
+        //     return acc;
+        // },{});
+        const result = dataGuar.filter((obj, index, arr) => {
+            const dateObj = new Date(obj.fecha);
+            const nextDateObj = new Date(arr[index + 1] ? arr[index + 1].fecha : obj.fecha);
+            return dateObj.getDate() !== nextDateObj.getDate() && dateObj.getHours() === 23 && dateObj.getMinutes() === 59;
+          });
+        console.log(result)
+        fechas = Object.values(result).map(item => item.fecha);
         valores = Object.values(result).map(item => item.valor);
 
         var ctx = document.getElementById('historial');
@@ -111,19 +121,19 @@ function cambiarGrafico(opcion){
                 },
                 options:{
                     scales:{
-                        xAxes:[
-                            {
-                                type: "time",
-                                time: {
-                                    parser: "YYYY-DD-MM h:m:s",
-                                    unit: "minute",
-                                    displayFormats:{
-                                        day: 'MM/DD h:mm A'
-                                    }
-                                },
-                                position: 'bottom'
-                            }
-                        ],
+                        // xAxes:[
+                        //     {
+                        //         type: "time",
+                        //         time: {
+                        //             parser: "YYYY-DD-MM h:m:s",
+                        //             unit: "day",
+                        //             displayFormats:{
+                        //                 day: 'MM/DD h:mm A'
+                        //             }
+                        //         },
+                        //         position: 'bottom'
+                        //     }
+                        // ],
                         yAxes: [
                             {
                                 ticks: {
@@ -141,8 +151,8 @@ function cambiarGrafico(opcion){
 
 
     }else if(opcion == 0){
-        fechas = dataGuar.map(item => item.fecha);
-        valores = dataGuar.map(item => item.valor);
+        fechas = dataDia.map(item => item.fecha);
+        valores = dataDia.map(item => item.valor);
 
         var ctx = document.getElementById('historial');
         myChart = new Chart(
@@ -190,9 +200,7 @@ function cambiarGrafico(opcion){
         )
     }
 
-    if(myChart != null){
-        myChart.destroy();
-    }
+    
 
     
 }
@@ -209,16 +217,15 @@ function cogerDiaAnterior(data){
     yesterday.setDate(yesterday.getDate() - 1);
 
     const result = data.filter(item => {
-        const itemDate = new Date(item.date);
+        const itemDate = new Date(item.fecha);
         return itemDate >= yesterday && itemDate <= today;
     });
 
-console.log(result);
+    return result;
 }
 
 function grafico(data){
-    const fechas = data.map(item => item.fecha);
-    const valores = data.map(item => item.valor);
+    
     dataGuar = data;
     dataDia = cogerDiaAnterior(data);
     document.getElementById("myModal").style.display = "block";
@@ -235,7 +242,8 @@ function grafico(data){
     //     <button onclick="cerrarGrafico()">Salir</button>
     // </div>`;
     
-
+    const fechas = dataDia.map(item => item.fecha);
+    const valores = dataDia.map(item => item.valor);
     var ctx = document.getElementById('historial');
     myChart = new Chart(
         ctx,

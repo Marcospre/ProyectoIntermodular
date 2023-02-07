@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: db:3306
--- Tiempo de generación: 07-02-2023 a las 09:28:43
+-- Tiempo de generación: 07-02-2023 a las 14:58:25
 -- Versión del servidor: 8.0.32
 -- Versión de PHP: 8.0.19
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Base de datos: `stocks`
 --
-CREATE DATABASE IF NOT EXISTS `stocks` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
-USE `stocks`;
 
 -- --------------------------------------------------------
 
@@ -29,6 +27,7 @@ USE `stocks`;
 -- Estructura de tabla para la tabla `actuales`
 --
 
+DROP TABLE IF EXISTS `actuales`;
 CREATE TABLE `actuales` (
   `id` int UNSIGNED NOT NULL,
   `datos` double(8,2) NOT NULL,
@@ -57,6 +56,7 @@ INSERT INTO `actuales` (`id`, `datos`, `fecha`) VALUES
 -- Estructura de tabla para la tabla `empresas`
 --
 
+DROP TABLE IF EXISTS `empresas`;
 CREATE TABLE `empresas` (
   `id` int UNSIGNED NOT NULL,
   `nombre` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -87,6 +87,7 @@ INSERT INTO `empresas` (`id`, `nombre`, `datos`, `created_at`, `updated_at`) VAL
 -- Estructura de tabla para la tabla `failed_jobs`
 --
 
+DROP TABLE IF EXISTS `failed_jobs`;
 CREATE TABLE `failed_jobs` (
   `id` bigint UNSIGNED NOT NULL,
   `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -103,6 +104,7 @@ CREATE TABLE `failed_jobs` (
 -- Estructura de tabla para la tabla `historial_empresas`
 --
 
+DROP TABLE IF EXISTS `historial_empresas`;
 CREATE TABLE `historial_empresas` (
   `id_empresa` int NOT NULL,
   `valor` double(8,2) NOT NULL,
@@ -117,6 +119,7 @@ CREATE TABLE `historial_empresas` (
 -- Estructura de tabla para la tabla `migrations`
 --
 
+DROP TABLE IF EXISTS `migrations`;
 CREATE TABLE `migrations` (
   `id` int UNSIGNED NOT NULL,
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -142,6 +145,7 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 -- Estructura de tabla para la tabla `password_resets`
 --
 
+DROP TABLE IF EXISTS `password_resets`;
 CREATE TABLE `password_resets` (
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -154,6 +158,7 @@ CREATE TABLE `password_resets` (
 -- Estructura de tabla para la tabla `personal_access_tokens`
 --
 
+DROP TABLE IF EXISTS `personal_access_tokens`;
 CREATE TABLE `personal_access_tokens` (
   `id` bigint UNSIGNED NOT NULL,
   `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -173,6 +178,7 @@ CREATE TABLE `personal_access_tokens` (
 -- Estructura de tabla para la tabla `users`
 --
 
+DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
   `id` bigint UNSIGNED NOT NULL,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
