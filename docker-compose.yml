@@ -56,7 +56,7 @@ services:
       MYSQL_DATABASE: stocks
       MYSQL_PASSWORD: stocks
     volumes: 
-      # - ./dump:/docker-entrypoint-initdb.d
+      - ./dump:/docker-entrypoint-initdb.d
       - /mysql:/var/lib/mysql
     ports:
       - 3306:3306

@@ -90,79 +90,144 @@ function cambiarGrafico(opcion){
 
             return acc;
         },{});
-        console.log(result)
+
         fechas = Object.values(result).map(item => item.date);
         valores = Object.values(result).map(item => item.valor);
+
+        var ctx = document.getElementById('historial');
+        myChart = new Chart(
+            ctx,
+            {
+                type:'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Valor(€)',
+                        data: valores,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options:{
+                    scales:{
+                        xAxes:[
+                            {
+                                type: "time",
+                                time: {
+                                    parser: "YYYY-DD-MM h:m:s",
+                                    unit: "minute",
+                                    displayFormats:{
+                                        day: 'MM/DD h:mm A'
+                                    }
+                                },
+                                position: 'bottom'
+                            }
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+
+
+
+            }
+        )
+
+
     }else if(opcion == 0){
         fechas = dataGuar.map(item => item.fecha);
         valores = dataGuar.map(item => item.valor);
+
+        var ctx = document.getElementById('historial');
+        myChart = new Chart(
+            ctx,
+            {
+                type:'line',
+                data: {
+                    labels: fechas,
+                    datasets: [{
+                        label: 'Valor(€)',
+                        data: valores,
+                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options:{
+                    scales:{
+                        xAxes:[
+                            {
+                                type: "time",
+                                time: {
+                                    parser: "YYYY-DD-MM h:m:s",
+                                    unit: "minute",
+                                    displayFormats:{
+                                        day: 'MM/DD h:mm A'
+                                    }
+                                },
+                                position: 'bottom'
+                            }
+                        ],
+                        yAxes: [
+                            {
+                                ticks: {
+                                    beginAtZero: true
+                                }
+                            }
+                        ]
+                    }
+                }
+
+
+
+            }
+        )
     }
 
     if(myChart != null){
         myChart.destroy();
     }
 
-    var ctx = document.getElementById('historial');
-    myChart = new Chart(
-        ctx,
-        {
-            type:'line',
-            data: {
-                labels: fechas,
-                datasets: [{
-                    label: 'Valor(€)',
-                    data: valores,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1
-                }]
-            },
-            options:{
-                scales:{
-                    xAxes:[
-                        {
-                            type: "time",
-                            time: {
-                                parser: "YYYY-DD-MM h:m:s",
-                                unit: "minute",
-                                displayFormats:{
-                                    day: 'MM/DD h:mm A'
-                                }
-                            },
-                            position: 'bottom'
-                        }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }
-                    ]
-                }
-            }
-
-
-
-        }
-    )
+    
 }
 
 function cerrarGrafico(){
     document.getElementById("myModal").style.display = "none";
+    document.getElementById("grafico").style.display = "none";
     myChart.destroy();
+}
+
+function cogerDiaAnterior(data){
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+
+    const result = data.filter(item => {
+        const itemDate = new Date(item.date);
+        return itemDate >= yesterday && itemDate <= today;
+    });
+
+console.log(result);
 }
 
 function grafico(data){
     const fechas = data.map(item => item.fecha);
     const valores = data.map(item => item.valor);
     dataGuar = data;
+    dataDia = cogerDiaAnterior(data);
     document.getElementById("myModal").style.display = "block";
     document.getElementById("register").style.display = "none";
     document.getElementById("login").style.display = "none";
     document.getElementById("grafico").style.display = "block";
     document.getElementById("contentModal").style.top = "30%";
     document.getElementById("contentModal").style.left = "30%";
+    
     document.getElementById("titulo").src = `Imagenes/im${data[0].id_empresa}.png`;
     // document.getElementById("content").innerHTML += 
     // `<div id="grafico">
@@ -270,6 +335,15 @@ function pruebaLocal(obj){
         localStorage.setItem('seleccionadas',JSON.stringify(guardar));
         document.getElementById("wrap2").style.display = 'block';
     }
+
+    empezarCiclo();
+}
+
+function empezarCiclo(){
+    if(cicloConsulta != null){
+        clearInterval(cicloConsulta);
+    }
+    cicloConsulta = setInterval(refrescarDatos,60000);
 }
 function prueba(obj,empresas){
     let guardar = new Array();
@@ -351,7 +425,8 @@ function cambiarPagina(){
     document.getElementById("wrap2").style.display = "block";
     let seleccionados = document.querySelectorAll('#selectContent>img');
     consultarEmpresas(seleccionados,false)
-    cicloConsulta = setInterval(refrescarDatos,60000);
+    // cicloConsulta = setInterval(refrescarDatos,60000);
+    empezarCiclo();
      
 }
 // let consultar = document.getElementById('guardar');
