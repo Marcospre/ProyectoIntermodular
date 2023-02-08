@@ -57,7 +57,7 @@ services:
       MYSQL_PASSWORD: stocks
     volumes: 
       - ./dump:/docker-entrypoint-initdb.d
-      - /mysql:/var/lib/mysql
+      - mysql:/var/lib/mysql
     ports:
       - 3306:3306
     networks:
@@ -91,6 +91,6 @@ services:
 networks:
     MarkOSnet:
         driver: bridge
-  # volumes:
-  #     sail-mysql:
-  #         driver: local
+volumes:
+    mysql:
+        driver: local

@@ -7,7 +7,7 @@ const pool = mysql.createPool({
     user: "stocks",
     password: "stocks",
     database: "stocks",
-    connectionLimit: 10,
+    // connectionLimit: 10,
 });
 
 // const createDb = async () => {

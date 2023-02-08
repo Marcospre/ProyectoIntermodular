@@ -208,6 +208,9 @@ function cambiarGrafico(opcion){
 function cerrarGrafico(){
     document.getElementById("myModal").style.display = "none";
     document.getElementById("grafico").style.display = "none";
+    document.getElementById("contentModal").style.top = "50%";
+    document.getElementById("contentModal").style.left = "50%";
+    document.getElementById("login").style.display = "flex";
     myChart.destroy();
 }
 
@@ -479,8 +482,10 @@ function setToken(token){
 
 function logout(){
     document.getElementById("myModal").style.display = "block";
+    document.getElementById("login").style.display = "flex";
     sessionStorage.removeItem('token');
 }
+
 async function logearUsuario(){
     const email = document.querySelector("#emailL");
     const password = document.querySelector("#passL");
