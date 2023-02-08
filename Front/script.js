@@ -6,6 +6,7 @@ window.onload = () => {
                 if(localStorage.seleccionadas != undefined){
                     document.getElementById("wrap").style.display = 'none';
                     document.getElementById("wrap2").style.display = 'block';
+                    document.getElementById("boton-atras").style.display = "block";
                     aEmpresas = JSON.parse(localStorage.seleccionadas);
                     consultarEmpresas(aEmpresas,true);
                 
@@ -18,6 +19,7 @@ window.onload = () => {
                 if(localStorage.seleccionadas != undefined){
                     document.getElementById("wrap").style.display = 'none';
                     document.getElementById("wrap2").style.display = 'block';
+                    document.getElementById("boton-atras").style.display = "block";
                 }else{
                     document.getElementById('wrap').style.display = 'block';
                     document.getElementById("wrap2").style.display = 'none';
@@ -41,10 +43,7 @@ window.onload = () => {
             "Telefonica",
             
         ];
-// const data = null;
 
-// const xhr = new XMLHttpRequest();
-// xhr.withCredentials = false;
 
 function consultarEmpresas(empresas,local){
 
@@ -82,25 +81,12 @@ function cambiarGrafico(opcion){
     }
 
     if(opcion == 1){
-        // const result = dataGuar.reduce((acc,curr) => {
-        //     const date = curr.fecha.split(' ')[0];
-        //     const time = curr.fecha.split(' ')[1];
-
-        //     if(!acc[date] || time > acc[date].time){
-        //         acc[date] = {
-        //             valor: curr.valor,
-        //             date: curr.fecha
-        //         };
-        //     }
-
-        //     return acc;
-        // },{});
         const result = dataGuar.filter((obj, index, arr) => {
             const dateObj = new Date(obj.fecha);
             const nextDateObj = new Date(arr[index + 1] ? arr[index + 1].fecha : obj.fecha);
             return dateObj.getDate() !== nextDateObj.getDate() && dateObj.getHours() === 23 && dateObj.getMinutes() === 59;
           });
-        console.log(result)
+       
         fechas = Object.values(result).map(item => item.fecha);
         valores = Object.values(result).map(item => item.valor);
 
@@ -134,13 +120,13 @@ function cambiarGrafico(opcion){
                         //         position: 'bottom'
                         //     }
                         // ],
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }
-                        ]
+                        // yAxes: [
+                        //     {
+                        //         ticks: {
+                        //             beginAtZero: true
+                        //         }
+                        //     }
+                        // ]
                     }
                 }
 
@@ -171,26 +157,26 @@ function cambiarGrafico(opcion){
                 },
                 options:{
                     scales:{
-                        xAxes:[
-                            {
-                                type: "time",
-                                time: {
-                                    parser: "YYYY-DD-MM h:m:s",
-                                    unit: "minute",
-                                    displayFormats:{
-                                        day: 'MM/DD h:mm A'
-                                    }
-                                },
-                                position: 'bottom'
-                            }
-                        ],
-                        yAxes: [
-                            {
-                                ticks: {
-                                    beginAtZero: true
-                                }
-                            }
-                        ]
+                        // xAxes:[
+                        //     {
+                        //         type: "time",
+                        //         time: {
+                        //             parser: "YYYY-DD-MM h:m:s",
+                        //             unit: "minute",
+                        //             displayFormats:{
+                        //                 day: 'MM/DD h:mm A'
+                        //             }
+                        //         },
+                        //         position: 'bottom'
+                        //     }
+                        // ],
+                        // yAxes: [
+                        //     {
+                        //         ticks: {
+                        //             beginAtZero: true
+                        //         }
+                        //     }
+                        // ]
                     }
                 }
 
@@ -239,11 +225,6 @@ function grafico(data){
     document.getElementById("contentModal").style.left = "30%";
     
     document.getElementById("titulo").src = `Imagenes/im${data[0].id_empresa}.png`;
-    // document.getElementById("content").innerHTML += 
-    // `<div id="grafico">
-    //     <canvas id="historial"></canvas>
-    //     <button onclick="cerrarGrafico()">Salir</button>
-    // </div>`;
     
     const fechas = dataDia.map(item => item.fecha);
     const valores = dataDia.map(item => item.valor);
@@ -264,26 +245,26 @@ function grafico(data){
             },
             options:{
                 scales:{
-                    xAxes:[
-                        {
-                            type: "time",
-                            time: {
-                                parser: "YYYY-DD-MM h:m:s",
-                                unit: "minute",
-                                displayFormats:{
-                                    day: 'MM/DD h:mm A'
-                                }
-                            },
-                            position: 'bottom'
-                        }
-                    ],
-                    yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true
-                            }
-                        }
-                    ]
+                    // xAxes:[
+                    //     {
+                    //         type: "time",
+                    //         time: {
+                    //             parser: "YYYY-DD-MM h:m:s",
+                    //             unit: "minute",
+                    //             displayFormats:{
+                    //                 day: 'MM/DD h:mm A'
+                    //             }
+                    //         },
+                    //         position: 'bottom'
+                    //     }
+                    // ],
+                    // yAxes: [
+                    //     {
+                    //         ticks: {
+                    //             beginAtZero: true
+                    //         }
+                    //     }
+                    // ]
                 }
             }
 
@@ -361,7 +342,7 @@ function prueba(obj,empresas){
     let i = 1;
     
     empresas.forEach(selec=>{
-        // console.log(selec.getAttribute("id").replace("im",""))
+
         obj.forEach(res=>{
             if(selec.getAttribute("id").replace("im","") == res.id){
                 id = selec.getAttribute("id");
@@ -431,30 +412,22 @@ function refrescarDatos(){
             .catch(err => console.error(err));
 }
 var cicloConsulta;
+
 function cambiarPagina(){
     document.getElementById("wrap").style.display = "none";
     document.getElementById("wrap2").style.display = "block";
+    document.getElementById("boton-atras").style.display = "block";
     let seleccionados = document.querySelectorAll('#selectContent>img');
     consultarEmpresas(seleccionados,false)
-    // cicloConsulta = setInterval(refrescarDatos,60000);
     empezarCiclo();
      
 }
-// let consultar = document.getElementById('guardar');
-//         consultar.addEventListener("click",function(){
-//             document.getElementById("wrap").style.display = "none";
-//             document.getElementById("wrap2").style.display = "block";
-//             let seleccionados = document.querySelectorAll('#selectContent>img');
-            
-//             // consultarApi(seleccionados,false);
-//             consultarEmpresas(seleccionados,false)
-//         })
-
 
 function atras(){
     clearInterval(cicloConsulta);
     document.getElementById('wrap').style.display = 'block';
     document.getElementById('wrap2').style.display = 'none';
+    document.getElementById("boton-atras").style.display = "none";
     localStorage.removeItem("seleccionadas")
     document.getElementById("resul").innerHTML = ""
 }

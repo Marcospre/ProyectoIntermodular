@@ -18,7 +18,8 @@ services:
     volumes:
       - ./GeneradorDatos:/app
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     networks:
       - MarkOSnet
 
@@ -62,6 +63,10 @@ services:
       - 3306:3306
     networks:
       - MarkOSnet
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
 
   phpmyadmin:
           depends_on:
