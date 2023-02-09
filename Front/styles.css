@@ -118,6 +118,9 @@ body{
 }
 .im{
     width: 200px;
+    height: 100px;
+    border: 1px solid black;
+    border-radius: 10px;
 }
 .content2{
     border: 1px solid black;
@@ -169,7 +172,7 @@ label{
     align-self: center;
 }
 
-#myModal{
+#myModal{ 
     display: none;
     
    
@@ -190,7 +193,7 @@ label{
     z-index: 200;
   padding: 20px;
     
-    top: 50%; 
+    top: 45%; 
    left: 50%;
   
    width:fit-content;
@@ -327,10 +330,10 @@ label{
 
 @media only screen and  (max-width: 500px){
     #content{
-        height: 900px;
+        height: 1000px;
       }
       #selectContent{
-        height: 700px;
+        height: 900px;
     }
 }
 

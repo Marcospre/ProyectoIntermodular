@@ -2,6 +2,7 @@ import mysql from "mysql2/promise";
 import cron from "node-cron";
 const NOW = new Date(new Date().setSeconds(0));
 
+/*Conexion base de datos*/
 const pool = mysql.createPool({
     host: "db",
     user: "stocks",
@@ -62,6 +63,10 @@ const ids = [1,2,3,4,5,6,7,8,9,10];
 // };
 
 // const volatility = 0.02;
+
+/* Funcion que genera un variable aleatoria a partir del valor anterior generado.
+    Se le pasa una variavle volatility para darle cierta dispersion a los datos 
+    generados*/
 
 const f = (old_price,volatility) => {
     const rnd = Math.random() - 0.498;
@@ -153,13 +158,14 @@ const insertCompanyData = async (id,number) => {
     });
 };
 
+/*Funcion que inserta el historico de datos*/
 const insertCompaniesData = async (number) => {
     // const ids = companies.map((_, id) => id);
     const inserts = ids.map((id) => insertCompanyData(id,number));
     await Promise.all(inserts);
 };
 
-
+/* Funcion que inicializa con el primer dato*/
 const inicializarDatos = async () =>{
     try {
         const con = await pool.getConnection();
@@ -181,11 +187,11 @@ const inicializarDatos = async () =>{
 
 try {
     // await createDb();
-    // await insertCompanies()
-    await insertCompaniesData(ENTRIES_PER_COMPANY);
-    await inicializarDatos();
-    cron.schedule("* * * * * ",() =>{
-        insertCompaniesData(1);
+    // await insertCompanies() 
+    await insertCompaniesData(ENTRIES_PER_COMPANY);     //primero se genera el historial
+    await inicializarDatos();                          //se inicaliza la tabla actuales
+    cron.schedule("* * * * * ",() =>{                  //comienza el bucle de generar un dato cada minuto
+        insertCompaniesData(1);                         
         console.log("insertado a fecha: " +new Date());
    });
 } catch (e) {

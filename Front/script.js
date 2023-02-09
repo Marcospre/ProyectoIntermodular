@@ -524,9 +524,12 @@ async function logearUsuario(){
           document.getElementById("myModal").style.display = "none";
          
           console.log(result.authorisation.token);
+        }else{
+            alert("login y/o contraseña incorrectos");
         }
       } catch (err) {
         console.error(err);
+        
       }
 
       if(localStorage.seleccionadas != undefined){
@@ -563,10 +566,12 @@ async function registrarUsuario(){
           const result = await response.json();
           setToken(result.authorisation.token);
           document.getElementById("myModal").style.display = "none";
-
           
+        }else{
+            alert("Registro incorrecto");
         }
       } catch (err) {
         console.error(err);
+        alert("Registro incorrecto");
       }
     }
