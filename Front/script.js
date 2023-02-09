@@ -1,5 +1,8 @@
 // import Chart from 'chart.js/auto'
 
+
+/*Carga al iniciar la pagina*/
+
 window.onload = () => {
             if(sessionStorage.token != undefined){
                 document.getElementById("myModal").style.display = 'none';
@@ -44,6 +47,7 @@ window.onload = () => {
             
         ];
 
+/* Funcion para hacer llamadas a la api de la empresa*/
 
 function consultarEmpresas(empresas,local){
 
@@ -70,7 +74,10 @@ function consultarEmpresas(empresas,local){
    
 }
 var myChart 
-var dataGuar;
+
+
+/* Funcion para cambiar el grafico de la empresa. Tiene un parametro de entrada para indicar 
+el tipo de grafico que se quiere mostrar. Mes o 24 horas*/
 
 function cambiarGrafico(opcion){
     let valores = null;
@@ -191,6 +198,8 @@ function cambiarGrafico(opcion){
     
 }
 
+/* Funcion que cierra el grafico destruyendo el chart existente*/
+
 function cerrarGrafico(){
     document.getElementById("myModal").style.display = "none";
     document.getElementById("grafico").style.display = "none";
@@ -199,6 +208,8 @@ function cerrarGrafico(){
     document.getElementById("login").style.display = "flex";
     myChart.destroy();
 }
+
+/* Funcion que devuelve los datos desde el dia anterior hasta esta hora */
 
 function cogerDiaAnterior(data){
     const today = new Date();
@@ -213,6 +224,10 @@ function cogerDiaAnterior(data){
     return result;
 }
 
+/* Funcion que muesrtra el grafico de una empresa cuando se pulsa el boton mostrar grafico.
+    Los datos obtenidos en el fetch se guardan en una variable para poder reutilizarlos */
+
+var dataGuar;
 function grafico(data){
     
     dataGuar = data;
@@ -275,6 +290,9 @@ function grafico(data){
 }
 
 
+/* Funcion que antes de llamar a la funcion mostrar grafico,
+   realiza un fetch para descargar los datos de la empresa con 
+   el id que se le ha pasado */
 
 function mostrarGrafico(id,opcion){
     const options = {
@@ -292,6 +310,9 @@ function mostrarGrafico(id,opcion){
 
 }
 
+/* Funcion que muestra los datos actualizados de una empresa a partir de las empresas
+    que estan guardadas en el localStorage. Como parametro se pasa las cotizaciones actualizadas de
+    las empresas */ 
 function pruebaLocal(obj){
     document.getElementById("resul").innerHTML = "";
     let guardar = new Array();
@@ -331,12 +352,19 @@ function pruebaLocal(obj){
     empezarCiclo();
 }
 
+/*Funcion para comenzar el ciclo que refresca los datos cada minuto */
+var cicloConsulta;
 function empezarCiclo(){
     if(cicloConsulta != null){
         clearInterval(cicloConsulta);
     }
     cicloConsulta = setInterval(refrescarDatos,60000);
 }
+
+/* Misma funcion que pruebaLocal pero a esta funcion se la llama cuando se seleccionan las empresas.
+   Se pasa como parametor el objeto obj con los datos actualizados de las 10 empresas y las empresas que se han 
+   seleciconado */
+
 function prueba(obj,empresas){
     let guardar = new Array();
     let i = 1;
@@ -374,6 +402,10 @@ function prueba(obj,empresas){
 
 }
 
+/* Funcion para actualziar el dato de la empresa cambiando el color 
+    dependiendo de si sube o baja el precio. Se pasa como parametro el 
+    datos actualizado de la empresa */
+
 function actualizarCard(obj){
     let i = 1;
     let sel = JSON.parse(localStorage.getItem('seleccionadas'));
@@ -399,6 +431,8 @@ function actualizarCard(obj){
     })
 }
 
+/* Fetch para descargar los datos actualizados de la empresa */
+
 function refrescarDatos(){
     const options = {
         method: 'GET',
@@ -411,7 +445,9 @@ function refrescarDatos(){
             .then(response => actualizarCard(response))
             .catch(err => console.error(err));
 }
-var cicloConsulta;
+
+
+/* Funcion para cambiar los wraps de la pagina SPA*/
 
 function cambiarPagina(){
     document.getElementById("wrap").style.display = "none";
@@ -423,6 +459,8 @@ function cambiarPagina(){
      
 }
 
+/*Funcion para retornar a la pagina anterior */
+
 function atras(){
     clearInterval(cicloConsulta);
     document.getElementById('wrap').style.display = 'block';
@@ -432,7 +470,7 @@ function atras(){
     document.getElementById("resul").innerHTML = ""
 }
 
-
+/* Funcion para cambiar de modal entre el registro y el login */
 
 function cambiarModal(cambio){
     if(cambio){
@@ -444,6 +482,8 @@ function cambiarModal(cambio){
     }
 }
 
+/*Funcion pque guarda el token en un sessionStorega */
+
 function setToken(token){
     if(sessionStorage.token != undefined){
         sessionStorage.setItem('token',token);
@@ -453,11 +493,16 @@ function setToken(token){
     }
 }
 
+/*Funcion para hacer un logout*/
+
 function logout(){
     document.getElementById("myModal").style.display = "block";
     document.getElementById("login").style.display = "flex";
     sessionStorage.removeItem('token');
 }
+
+/* Funcion que llama al fetch del login pasandole en el body del fecths los parametors
+   de email y password escritos en el input del formulario */
 
 async function logearUsuario(){
     const email = document.querySelector("#emailL");
@@ -494,6 +539,9 @@ async function logearUsuario(){
     }
 
 }
+
+/* Funcion que llama al fetch del register pasandole en el body del fecth los parametros
+   de nombre, email y password escritos en el input del formulario */
 
 async function registrarUsuario(){
     const name = document.querySelector("#nameR");

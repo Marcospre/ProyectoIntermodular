@@ -270,6 +270,16 @@ label{
 }
 
 
+#botonSalir{
+    cursor: pointer;
+    margin-top: 1%;
+}
+
+#botonSalir:hover{
+    color: blue;
+}
+
+
 
 @media only screen and (max-width: 1200px) {
     
